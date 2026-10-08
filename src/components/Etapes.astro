@@ -1,0 +1,149 @@
+---
+import { etapes as E } from "../content/site";
+import { fr } from "../lib/typo";
+---
+
+<section class="steps-sec" data-trace="timeline" aria-labelledby="steps-title">
+	<div class="wrap over">
+		<p class="label label-line">{E.label}</p>
+		<h2 id="steps-title" class="h-section mt-4">{fr(E.title)}</h2>
+
+		<div class="steps-wrap">
+			<span class="steps-line" data-trace-line aria-hidden="true"></span>
+			<ol class="steps">
+				{
+					E.steps.map((s, i) => (
+						<li class:list={["step", i % 2 ? "is-right" : "is-left"]} data-step>
+							<span class="marker" aria-hidden="true" />
+							<div class="step-body" data-fade>
+								<p class="step-num display" aria-hidden="true">
+									{String(i + 1).padStart(2, "0")}
+								</p>
+								<h3 class="step-title">{fr(s.title)}</h3>
+								<p class="step-text">{fr(s.text)}</p>
+							</div>
+						</li>
+					))
+				}
+			</ol>
+		</div>
+	</div>
+</section>
+
+<style>
+	.steps-sec {
+		position: relative;
+		padding-block: 6rem;
+	}
+	@media (min-width: 1024px) {
+		.steps-sec {
+			padding-block: 9rem;
+		}
+	}
+	.steps-wrap {
+		position: relative;
+		margin-top: 3.5rem;
+	}
+	/* repère de position pour la trace (invisible) : centre du premier au dernier repère */
+	.steps-line {
+		position: absolute;
+		left: -8px;
+		width: 0;
+		top: 0.6rem;
+		bottom: 2.5rem;
+	}
+	:global(html.no-js) .steps-line {
+		border-left: 2px dashed color-mix(in srgb, var(--color-gold) 35%, transparent);
+	}
+	.steps {
+		display: flex;
+		flex-direction: column;
+		gap: 3rem;
+		padding-left: 1.75rem;
+	}
+	.step {
+		position: relative;
+	}
+	.marker {
+		position: absolute;
+		left: calc(-1.75rem - 16px);
+		top: 0.45rem;
+		width: 16px;
+		height: 16px;
+		border-radius: 50%;
+		background: var(--color-ink);
+		border: 2px solid color-mix(in srgb, var(--color-gold) 45%, transparent);
+		transition:
+			background-color 0.4s,
+			border-color 0.4s,
+			box-shadow 0.4s;
+	}
+	:global(.step.is-on) .marker {
+		background: var(--color-gold);
+		border-color: var(--color-gold);
+		box-shadow: 0 0 0 6px rgb(214 168 74 / 0.15);
+	}
+	:global(html.no-js) .marker {
+		background: var(--color-gold);
+	}
+	.step-num {
+		font-size: 3.2rem;
+		line-height: 0.85;
+		color: transparent;
+		-webkit-text-stroke: 1.2px var(--color-gold);
+	}
+	.step-title {
+		margin-top: 0.6rem;
+		font-family: var(--font-label);
+		font-weight: 700;
+		font-size: 1.6rem;
+		line-height: 1.1;
+		letter-spacing: 0.03em;
+		text-transform: uppercase;
+	}
+	.step-text {
+		margin-top: 0.4rem;
+		color: color-mix(in srgb, var(--color-paper) 80%, transparent);
+		font-size: 1.05rem;
+	}
+
+	@media (min-width: 768px) {
+		.steps-line {
+			left: 50%;
+			top: 1.1rem;
+			bottom: 3.5rem;
+		}
+		.steps {
+			padding-left: 0;
+			gap: 1.5rem;
+		}
+		.step {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			min-height: 9rem;
+		}
+		.marker {
+			left: 50%;
+			top: 0.9rem;
+			width: 22px;
+			height: 22px;
+			translate: -50% 0;
+		}
+		.step-body {
+			max-width: 24rem;
+		}
+		.is-left .step-body {
+			grid-column: 1;
+			justify-self: end;
+			text-align: right;
+			padding-right: 4.5rem;
+		}
+		.is-right .step-body {
+			grid-column: 2;
+			padding-left: 4.5rem;
+		}
+		.step-num {
+			font-size: 4.4rem;
+		}
+	}
+</style>

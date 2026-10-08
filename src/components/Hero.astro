@@ -1,0 +1,611 @@
+---
+// Hero au défilement « La porte » : deux séquences canvas (assets/frames/) ou, à défaut,
+// la photo de façade avec une porte dessinée en CSS qui remonte et une voiture qui sort.
+import { Picture, getImage } from "astro:assets";
+import Logo from "./Logo.astro";
+import Icon from "./Icon.astro";
+import CarFront from "./CarFront.astro";
+import { hero, contact, actions } from "../content/site";
+import { facade as facadeSetup, frames as framesSetup, scroll, timing } from "../content/reglages";
+import { photo } from "../lib/photos";
+import { framesManifest } from "../lib/frames";
+import { fr } from "../lib/typo";
+
+const manifest = await framesManifest();
+const hasFrames = Boolean(manifest.porte.desktop || manifest.porte.mobile);
+const facade = photo("facade");
+if (!facade) throw new Error("assets/photos/facade.jpg est introuvable");
+const doorTexture = await getImage({ src: facade, width: Math.min(facade.width, 1100), format: "webp", quality: 74 });
+
+const setup = {
+	facade: facadeSetup,
+	frames: framesSetup,
+	scroll,
+	timing,
+	facadeSize: { width: facade.width, height: facade.height },
+};
+
+const d = facadeSetup.desktop;
+const pct = (v: number) => `${(v * 100).toFixed(3)}%`;
+const rect = (r: { x: number; y: number; w: number; h: number }) => `left:${pct(r.x)};top:${pct(r.y)};width:${pct(r.w)};height:${pct(r.h)}`;
+// Fond de la porte = la vraie porte de la photo (avec la Mustang peinte), recadrée au même endroit
+const doorBg = [
+	`background-image:url(${doorTexture.src})`,
+	`background-size:${pct(1 / d.door.w)} ${pct(1 / d.door.h)}`,
+	`background-position:${pct(d.door.x / (1 - d.door.w))} ${pct(d.door.y / (1 - d.door.h))}`,
+].join(";");
+---
+
+<div
+	id="top"
+	class="hero"
+	data-hero
+	data-mode={hasFrames ? "frames" : "fallback"}
+	data-manifest={JSON.stringify(manifest)}
+	data-setup={JSON.stringify(setup)}
+	style={`--seq1:${scroll.porte}vh;--seq2:${scroll.depart}vh;--facade-ar:${facade.width / facade.height}`}
+>
+	<div class="hero-stage" data-stage>
+		<div class="hero-zoom" data-zoom>
+			<section class="seq" data-seq="porte" aria-label="Séquence 1 : la porte du garage s'ouvre">
+				<canvas data-canvas aria-hidden="true"></canvas>
+			</section>
+			<section class="seq" data-seq="depart" aria-label="Séquence 2 : la voiture sort de l'atelier">
+				<canvas data-canvas aria-hidden="true"></canvas>
+			</section>
+
+			<div class="scene" data-scene>
+				<Picture
+					src={facade}
+					formats={["avif", "webp"]}
+					widths={[800, Math.min(1392, facade.width)]}
+					sizes="(max-width: 767px) 215vw, 100vw"
+					alt="Façade de la Carrosserie La Belle Étoile, rue de la Gare à Charquemont, avec la Mustang peinte sur la porte du garage"
+					class="scene-photo"
+					loading="eager"
+					fetchpriority="high"
+					data-poster
+				/>
+				<div class="scene-grade" aria-hidden="true"></div>
+				<div class="fallback" data-fallback aria-hidden="true">
+					<div class="spill" data-spill style={`left:${pct(d.door.x - d.door.w * 0.35)};top:${pct(d.door.y + d.door.h)};width:${pct(d.door.w * 1.7)};height:${pct(1 - d.door.y - d.door.h)}`}></div>
+					<div class="door" data-door style={rect(d.door)}>
+						<div class="interior">
+							<span class="neon n1"></span><span class="neon n2"></span><span class="neon n3"></span>
+							<span class="booth-glow"></span>
+							<CarFront class="car-in" />
+						</div>
+						<div class="door-panel" data-door-panel style={doorBg}>
+							<span class="door-slats"></span>
+							<span class="door-seal"></span>
+						</div>
+						<span class="door-leak" data-door-leak></span>
+					</div>
+				</div>
+				<div class="sign" data-sign style={rect(d.sign)}>
+					<Logo variant="enseigne" decorative />
+				</div>
+			</div>
+		</div>
+
+		<div class="scrim" aria-hidden="true"></div>
+		<svg class="fx" data-fx aria-hidden="true" focusable="false"></svg>
+		<span class="smoke" data-smoke aria-hidden="true"></span>
+		<CarFront class="car-out" />
+
+		<div class="hero-ui">
+			<div class="wrap hero-ui-inner">
+				<div class="hero-copy" data-hero-copy>
+					<p class="label label-line hero-eyebrow" data-reveal>{fr(hero.eyebrow)}</p>
+					<h1 class="hero-title display">
+						{
+							hero.h1.map((line) => (
+								<span class="line">
+									<span data-reveal-line>{fr(line)}</span>
+								</span>
+							))
+						}
+					</h1>
+					<p class="hero-sub" data-reveal>{fr(hero.sub)}</p>
+					<div class="hero-cta" data-reveal>
+						<a href={contact.phoneHref} class="btn btn-gold">
+							<Icon name="phone" />
+							{fr(actions.callLong)}
+						</a>
+						<a href={contact.directionsUrl} class="btn btn-line" target="_blank" rel="noopener">
+							<Icon name="route" />
+							{actions.directions}
+						</a>
+					</div>
+				</div>
+				<p class="motto display" data-motto aria-hidden="true">
+					{hero.motto.map((w, i) => <span class={`motto-word w${i}`}>{fr(w)}</span>)}
+				</p>
+			</div>
+		</div>
+
+		<div class="scroll-hint" data-hint aria-hidden="true">
+			<svg viewBox="0 0 40 40" class="wheel">
+				<circle cx="20" cy="20" r="17" fill="none" stroke="currentColor" stroke-width="3"></circle>
+				<circle cx="20" cy="20" r="11.5" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".6"></circle>
+				<g stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+					<path d="M20 20V9"></path><path d="m20 20 10.5-3.4"></path><path d="m20 20 6.5 8.9"></path><path d="m20 20-6.5 8.9"></path><path d="M20 20 9.5 16.6"></path>
+				</g>
+				<circle cx="20" cy="20" r="3" fill="currentColor"></circle>
+			</svg>
+			<span>{hero.scrollHint}</span>
+		</div>
+
+		<div class="calage" data-calage hidden></div>
+	</div>
+</div>
+
+<style>
+	.hero {
+		position: relative;
+		height: calc(100lvh + var(--seq1) + var(--seq2));
+		background: var(--color-deep);
+	}
+	.hero-stage {
+		position: sticky;
+		top: 0;
+		height: 100vh;
+		height: 100lvh;
+		overflow: hidden;
+		z-index: 3;
+		background: var(--color-deep);
+	}
+	.hero-zoom {
+		position: absolute;
+		inset: 0;
+		transform-origin: 50% 40%;
+	}
+	.seq {
+		position: absolute;
+		inset: 0;
+	}
+	.seq canvas {
+		width: 100%;
+		height: 100%;
+	}
+	.seq[data-seq="depart"] {
+		visibility: hidden;
+	}
+	:global(.hero.in-depart) .seq[data-seq="depart"] {
+		visibility: visible;
+	}
+	.hero[data-mode="fallback"] .seq {
+		display: none;
+	}
+
+	/* La scène porte la photo (secours) et les superpositions calées en % de l'image */
+	.scene {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: max(100%, 100lvh * var(--facade-ar));
+		aspect-ratio: var(--facade-ar);
+		translate: -50% -50%;
+	}
+	:global(.scene.is-placed) {
+		translate: none;
+		aspect-ratio: auto;
+	}
+	.scene :global(.scene-photo),
+	.scene :global(.scene-photo img) {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.scene :global(.scene-photo img) {
+		filter: brightness(0.66) saturate(0.82) contrast(1.06);
+	}
+	/* « Heure bleue » : ciel assombri, façade gardée lisible */
+	.scene-grade {
+		position: absolute;
+		inset: 0;
+		background:
+			linear-gradient(180deg, rgb(8 10 16 / 0.94) 0%, rgb(10 13 22 / 0.82) 22%, rgb(14 17 26 / 0.5) 36%, rgb(19 20 23 / 0.1) 50%, rgb(12 13 15 / 0.35) 100%),
+			linear-gradient(90deg, rgb(12 13 15 / 0.5), transparent 40%);
+	}
+	.hero[data-mode="frames"] .scene-grade,
+	.hero[data-mode="frames"] .fallback {
+		display: none;
+	}
+	:global(.hero.poster-off) .scene :global(.scene-photo) {
+		visibility: hidden;
+	}
+
+	.sign {
+		position: absolute;
+		filter: drop-shadow(0 6px 18px rgb(0 0 0 / 0.55));
+	}
+	.sign :global(svg) {
+		width: 100%;
+		height: 100%;
+	}
+
+	/* ---- Porte de secours ---- */
+	.door {
+		position: absolute;
+		overflow: hidden;
+		background: #0a0807;
+	}
+	.interior {
+		position: absolute;
+		inset: 0;
+		background:
+			radial-gradient(120% 70% at 50% 100%, rgb(255 196 120 / 0.55), transparent 60%),
+			linear-gradient(180deg, #2a1f16 0%, #6f4e2f 32%, #c58f52 62%, #6a4a2c 78%, #2b2019 100%);
+		opacity: 0.25;
+	}
+	.neon {
+		position: absolute;
+		top: 9%;
+		height: 2.2%;
+		width: 22%;
+		border-radius: 2px;
+		background: #fff8ea;
+		box-shadow:
+			0 0 12px 3px rgb(255 240 210 / 0.8),
+			0 0 40px 10px rgb(255 210 150 / 0.35);
+	}
+	.n1 {
+		left: 8%;
+	}
+	.n2 {
+		left: 39%;
+	}
+	.n3 {
+		left: 70%;
+	}
+	.booth-glow {
+		position: absolute;
+		inset: 20% 10% 18%;
+		background: radial-gradient(closest-side, rgb(255 226 170 / 0.55), transparent);
+	}
+	.door-panel {
+		position: absolute;
+		inset: 0;
+		background-repeat: no-repeat;
+		will-change: transform;
+	}
+	.door-panel::after {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background: rgb(10 12 18 / 0.35);
+	}
+	.door-slats {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		background: repeating-linear-gradient(
+			180deg,
+			rgb(255 255 255 / 0.05) 0,
+			rgb(255 255 255 / 0.05) 0.6%,
+			transparent 0.6%,
+			transparent 11.4%,
+			rgb(0 0 0 / 0.45) 11.4%,
+			rgb(0 0 0 / 0.45) 12.5%
+		);
+	}
+	.door-seal {
+		position: absolute;
+		z-index: 1;
+		inset: auto 0 0;
+		height: 2.5%;
+		background: #050506;
+		box-shadow: 0 -1px 0 rgb(255 255 255 / 0.08);
+	}
+	.door-leak {
+		position: absolute;
+		inset: auto 2% -1px;
+		height: 3%;
+		background: linear-gradient(0deg, rgb(255 200 120 / 0.9), transparent);
+		filter: blur(1px);
+		opacity: 0.7;
+	}
+	.spill {
+		position: absolute;
+		background: radial-gradient(60% 75% at 50% 0%, rgb(255 196 120 / 0.55), rgb(255 170 90 / 0.18) 45%, transparent 75%);
+		mix-blend-mode: screen;
+		opacity: 0;
+	}
+
+	/* Voiture */
+	.car {
+		position: absolute;
+		pointer-events: none;
+	}
+	.car :global(svg) {
+		position: relative;
+		width: 100%;
+		height: auto;
+		z-index: 1;
+	}
+	.car :global(.hl) {
+		fill: #2c2a26;
+		transition: fill 0.12s;
+	}
+	:global(.car.lights-on .hl) {
+		fill: #fff6dc;
+		filter: drop-shadow(0 0 4px #ffe9b0);
+	}
+	.car :global(.beam) {
+		position: absolute;
+		z-index: 2;
+		top: 56.8%;
+		width: 62%;
+		aspect-ratio: 1;
+		translate: -50% -50%;
+		border-radius: 50%;
+		background: radial-gradient(closest-side, rgb(255 250 235 / 0.95), rgb(255 226 160 / 0.5) 22%, rgb(255 200 120 / 0.14) 52%, transparent);
+		mix-blend-mode: screen;
+		opacity: 0;
+		transition: opacity 0.15s;
+	}
+	.car :global(.beam-l) {
+		left: 13.3%;
+	}
+	.car :global(.beam-r) {
+		left: 86.7%;
+	}
+	.car :global(.floor-light) {
+		position: absolute;
+		left: -30%;
+		right: -30%;
+		top: 88%;
+		height: 60%;
+		background: radial-gradient(50% 50% at 50% 30%, rgb(255 236 190 / 0.45), transparent 70%);
+		mix-blend-mode: screen;
+		opacity: 0;
+		transition: opacity 0.2s;
+	}
+	:global(.car.lights-on .beam),
+	:global(.car.lights-on .floor-light) {
+		opacity: 1;
+	}
+	.door :global(.car-in) {
+		left: 14%;
+		width: 72%;
+		bottom: 1%;
+	}
+	.hero-stage > :global(.car-out) {
+		left: 0;
+		top: 0;
+		visibility: hidden;
+		transform-origin: 50% 100%;
+		will-change: transform;
+		z-index: 2;
+	}
+
+	.smoke {
+		position: absolute;
+		z-index: 2;
+		opacity: 0;
+		pointer-events: none;
+		background:
+			radial-gradient(40% 50% at 35% 60%, rgb(220 214 205 / 0.55), transparent 70%),
+			radial-gradient(45% 55% at 65% 55%, rgb(200 196 190 / 0.45), transparent 70%);
+		filter: blur(6px);
+	}
+	.hero[data-mode="frames"] .smoke {
+		display: none;
+	}
+
+	/* Calques écran */
+	.scrim {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background:
+			linear-gradient(180deg, rgb(12 13 15 / 0.65) 0, transparent 32%),
+			linear-gradient(0deg, rgb(12 13 15 / 0.55) 0, transparent 22%);
+	}
+	@media (min-width: 1024px) {
+		.scrim {
+			background:
+				linear-gradient(90deg, rgb(12 13 15 / 0.82) 0, rgb(12 13 15 / 0.5) 32%, transparent 58%),
+				linear-gradient(0deg, rgb(12 13 15 / 0.5) 0, transparent 25%);
+		}
+	}
+	.fx {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		overflow: visible;
+		pointer-events: none;
+		z-index: 1;
+	}
+
+	/* Textes */
+	.hero-ui {
+		position: absolute;
+		inset: 0;
+		height: 100svh;
+		pointer-events: none;
+		z-index: 4;
+	}
+	.hero-ui-inner {
+		position: relative;
+		height: 100%;
+	}
+	.hero-copy {
+		position: absolute;
+		left: 16px;
+		right: 16px;
+		top: calc(var(--banner-h) + 60px + 4svh);
+		pointer-events: auto;
+	}
+	@media (min-width: 768px) {
+		.hero-copy {
+			left: 64px;
+			right: 64px;
+			top: calc(var(--banner-h) + 72px + 5svh);
+			max-width: 36rem;
+		}
+	}
+	@media (min-width: 1024px) {
+		.hero-copy {
+			left: 120px;
+			right: auto;
+			top: auto;
+			bottom: 15svh;
+			max-width: min(40rem, 50vw);
+		}
+	}
+	@media (min-width: 1320px) {
+		.hero-copy {
+			left: calc((100vw - 1320px) / 2 + 120px);
+		}
+	}
+	.hero-eyebrow {
+		margin-bottom: 1rem;
+	}
+	.hero-title {
+		font-size: clamp(2.9rem, 13.2vw, 7.6rem);
+		line-height: 0.9;
+		text-shadow: 0 4px 30px rgb(0 0 0 / 0.35);
+	}
+	@media (min-width: 768px) {
+		.hero-title {
+			font-size: clamp(3.4rem, 8.4vw, 5.6rem);
+		}
+	}
+	@media (min-width: 1024px) {
+		.hero-title {
+			font-size: clamp(3.6rem, 5.6vw, 6.2rem);
+		}
+	}
+	.line {
+		display: block;
+		overflow: hidden;
+		/* place pour les accents des capitales (À) au-dessus de la ligne */
+		padding-top: 0.16em;
+		margin-top: -0.16em;
+		padding-bottom: 0.04em;
+	}
+	.line > span {
+		display: block;
+	}
+	.hero-sub {
+		margin-top: 1.1rem;
+		max-width: 32rem;
+		color: color-mix(in srgb, var(--color-paper) 88%, transparent);
+		font-size: 1rem;
+		line-height: 1.55;
+		text-wrap: pretty;
+		text-shadow: 0 2px 16px rgb(0 0 0 / 0.6);
+	}
+	@media (min-width: 768px) {
+		.hero-sub {
+			font-size: 1.125rem;
+		}
+	}
+	.hero-cta {
+		display: none;
+		margin-top: 1.75rem;
+		gap: 0.75rem;
+		flex-wrap: wrap;
+	}
+	@media (min-width: 1024px) {
+		.hero-cta {
+			display: flex;
+		}
+	}
+
+	.motto {
+		position: absolute;
+		left: 16px;
+		right: 16px;
+		top: calc(var(--banner-h) + 60px + 6svh);
+		display: flex;
+		flex-direction: column;
+		font-size: clamp(3.4rem, 17vw, 8.5rem);
+		line-height: 1;
+		visibility: hidden;
+	}
+	@media (min-width: 768px) {
+		.motto {
+			left: 64px;
+			top: calc(var(--banner-h) + 72px + 6svh);
+			font-size: clamp(4rem, 11vw, 8.5rem);
+		}
+	}
+	@media (min-width: 1024px) {
+		.motto {
+			left: 120px;
+			top: auto;
+			bottom: 14svh;
+			font-size: clamp(4rem, 8.5vw, 8.5rem);
+		}
+	}
+	@media (min-width: 1320px) {
+		.motto {
+			left: calc((100vw - 1320px) / 2 + 120px);
+		}
+	}
+	.motto-word {
+		display: block;
+	}
+	.w1 {
+		color: var(--color-gold);
+	}
+	.w2 {
+		color: transparent;
+		-webkit-text-stroke: 1.5px var(--color-paper);
+	}
+
+	.scroll-hint {
+		position: absolute;
+		z-index: 4;
+		left: 50%;
+		bottom: calc(env(safe-area-inset-bottom) + 92px);
+		translate: -50% 0;
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		color: var(--color-paper);
+		font-family: var(--font-label);
+		font-weight: 600;
+		font-size: 0.8rem;
+		letter-spacing: 0.24em;
+		text-transform: uppercase;
+		opacity: 0.85;
+		pointer-events: none;
+	}
+	@media (min-width: 1024px) {
+		.scroll-hint {
+			bottom: 4.5svh;
+		}
+	}
+	.wheel {
+		width: 28px;
+		height: 28px;
+		color: var(--color-gold);
+		animation: wheel-spin 2.6s linear infinite;
+	}
+	@keyframes wheel-spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	.calage {
+		position: absolute;
+		inset: 0;
+		z-index: 6;
+		pointer-events: none;
+	}
+
+	/* Mouvement réduit : pas de séquence, une seule image */
+	@media (prefers-reduced-motion: reduce) {
+		.hero {
+			height: 100lvh;
+		}
+	}
+</style>

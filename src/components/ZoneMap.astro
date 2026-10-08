@@ -1,0 +1,111 @@
+---
+// Carte stylisée de la zone (positions approximatives) : points dorés autour de Charquemont.
+import { final } from "../content/site";
+
+const main = final.zone.find((z) => z.main)!;
+const K = 1850; // px par degré de latitude
+const cos = Math.cos((main.lat * Math.PI) / 180);
+const W = 440;
+const H = 360;
+const cx = 225;
+const cy = 190;
+const pos = (z: { lat: number; lng: number }) => ({ x: cx + (z.lng - main.lng) * cos * K, y: cy - (z.lat - main.lat) * K });
+const km = K / 111.2;
+const towns = final.zone.map((z) => ({ ...z, ...pos(z) }));
+const maiche = towns.find((t) => t.note);
+// côté de l'étiquette pour éviter les chevauchements
+const anchor = (t: { x: number }) => (t.x < cx - 20 ? "end" : "start");
+---
+
+<svg class="zone" viewBox={`0 0 ${W} ${H}`} role="img" aria-labelledby="zone-title">
+	<title id="zone-title">Zone d'intervention : {final.zone.map((z) => z.name).join(", ")}</title>
+	<defs>
+		<radialGradient id="zone-glow">
+			<stop offset="0" stop-color="#d6a84a" stop-opacity=".22"></stop>
+			<stop offset="1" stop-color="#d6a84a" stop-opacity="0"></stop>
+		</radialGradient>
+	</defs>
+	<circle cx={cx} cy={cy} r={km * 11} fill="url(#zone-glow)"></circle>
+	{
+		[5, 10].map((r) => (
+			<g>
+				<circle cx={cx} cy={cy} r={km * r} fill="none" stroke="#d6a84a" stroke-opacity=".28" stroke-dasharray="2 6" stroke-linecap="round" />
+				<text x={cx + km * r * 0.707 + 4} y={cy - km * r * 0.707 - 4} class="ring">
+					{r} km
+				</text>
+			</g>
+		))
+	}
+	{maiche && <path d={`M${cx} ${cy}L${maiche.x} ${maiche.y}`} stroke="#d6a84a" stroke-width="1.5" stroke-dasharray="1 5" stroke-linecap="round" class="route" />}
+	{
+		towns
+			.filter((t) => !t.main)
+			.map((t) => (
+				<g class="town" data-town>
+					<circle cx={t.x} cy={t.y} r="9" fill="#d6a84a" fill-opacity=".15" />
+					<circle cx={t.x} cy={t.y} r="4" fill="#d6a84a" />
+					<text x={t.x + (anchor(t) === "end" ? -12 : 12)} y={t.y + 4} text-anchor={anchor(t)} class="name">
+						{t.name}
+					</text>
+					{t.note && (
+						<text x={t.x + (anchor(t) === "end" ? -12 : 12)} y={t.y + 20} text-anchor={anchor(t)} class="note">
+							{t.note}
+						</text>
+					)}
+				</g>
+			))
+	}
+	<g class="home">
+		<circle cx={cx} cy={cy} r="20" fill="#d6a84a" fill-opacity=".14" class="pulse"></circle>
+		<path d={`M${cx} ${cy - 11}l3.2 6.9 7.5.9-5.5 5.1 1.4 7.4-6.6-3.7-6.6 3.7 1.4-7.4-5.5-5.1 7.5-.9z`} fill="#d6a84a"></path>
+		<text x={cx} y={cy + 34} text-anchor="middle" class="name main">{main.name}</text>
+	</g>
+</svg>
+
+<style>
+	.zone {
+		width: 100%;
+		height: auto;
+		overflow: visible;
+	}
+	.name {
+		font-family: var(--font-label);
+		font-weight: 600;
+		font-size: 15px;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		fill: var(--color-paper);
+	}
+	.main {
+		font-weight: 700;
+		font-size: 17px;
+		fill: var(--color-gold);
+	}
+	.note,
+	.ring {
+		font-family: var(--font-label);
+		font-weight: 600;
+		font-size: 12px;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		fill: var(--color-gold);
+	}
+	.ring {
+		fill: color-mix(in srgb, var(--color-gold) 60%, transparent);
+	}
+	.pulse {
+		transform-origin: center;
+		transform-box: fill-box;
+		animation: pulse 2.8s ease-out infinite;
+	}
+	@keyframes pulse {
+		0% {
+			transform: scale(0.6);
+			opacity: 1;
+		}
+		100% {
+			transform: scale(2.2);
+			opacity: 0;
+		}
+	}
+</style>

@@ -1,0 +1,46 @@
+---
+// Muscle car vue de face, sans logo ni badge (hero de secours).
+interface Props {
+	class?: string;
+}
+const { class: className = "" } = Astro.props;
+const id = "c" + Math.random().toString(36).slice(2, 7);
+---
+
+<div class:list={["car", className]}>
+	<svg viewBox="0 0 240 132" aria-hidden="true" focusable="false">
+		<defs>
+			<linearGradient id={`${id}b`} x1="0" y1="0" x2="0" y2="1">
+				<stop offset="0" stop-color="#34363c"></stop>
+				<stop offset=".5" stop-color="#15161a"></stop>
+				<stop offset="1" stop-color="#08090a"></stop>
+			</linearGradient>
+			<linearGradient id={`${id}g`} x1="0" y1="0" x2="0" y2="1">
+				<stop offset="0" stop-color="#4a4f58"></stop>
+				<stop offset="1" stop-color="#141619"></stop>
+			</linearGradient>
+			<linearGradient id={`${id}c`} x1="0" y1="0" x2="0" y2="1">
+				<stop offset="0" stop-color="#e4e6e9"></stop>
+				<stop offset=".5" stop-color="#6b7077"></stop>
+				<stop offset="1" stop-color="#b9bcc1"></stop>
+			</linearGradient>
+		</defs>
+		<ellipse cx="120" cy="125" rx="122" ry="8" fill="#000" opacity=".6"></ellipse>
+		<rect x="22" y="98" width="40" height="28" rx="6" fill="#050506"></rect>
+		<rect x="178" y="98" width="40" height="28" rx="6" fill="#050506"></rect>
+		<path d="M72 53 85 20Q120 11 155 20L168 53Z" fill={`url(#${id}b)`}></path>
+		<path d="M83 50 93 25Q120 18 147 25L157 50Z" fill={`url(#${id}g)`}></path>
+		<path d="M10 67Q12 53 40 51H200Q228 53 230 67L234 94Q234 107 220 107H20Q6 107 6 94Z" fill={`url(#${id}b)`}></path>
+		<path d="M54 55Q120 47 186 55" stroke="#3d4047" stroke-width="2" fill="none"></path>
+		<rect x="52" y="62" width="136" height="27" rx="5" fill="#060607" stroke="#2e3137" stroke-width="2"></rect>
+		<path d="M58 70H182M58 76H182M58 82H182" stroke="#1b1d21" stroke-width="1.5"></path>
+		<circle class="hl" cx="32" cy="75" r="11.5"></circle>
+		<circle class="hl" cx="208" cy="75" r="11.5"></circle>
+		<rect x="6" y="92" width="228" height="7" rx="3.5" fill={`url(#${id}c)`}></rect>
+		<path d="M85 20Q120 11 155 20" stroke="#ffd79a" stroke-opacity=".6" stroke-width="1.6" fill="none"></path>
+		<path d="M10 67Q12 53 40 51H200Q228 53 230 67" stroke="#ffd79a" stroke-opacity=".38" stroke-width="1.6" fill="none"></path>
+	</svg>
+	<span class="beam beam-l"></span>
+	<span class="beam beam-r"></span>
+	<span class="floor-light"></span>
+</div>

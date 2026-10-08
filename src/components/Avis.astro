@@ -1,0 +1,189 @@
+---
+import Icon from "./Icon.astro";
+import { avis as A, contact } from "../content/site";
+import { fr } from "../lib/typo";
+
+const rating = contact.rating.value;
+const fill = (i: number) => Math.round(Math.max(0, Math.min(1, rating - i)) * 100);
+---
+
+<section id="avis" class="avis" data-trace aria-labelledby="avis-title">
+	<div class="wrap over">
+		<div class="top">
+			<div>
+				<p class="label label-line">{A.label}</p>
+				<h2 id="avis-title" class="h-section mt-4 max-w-[11ch]">{fr(A.title)}</h2>
+			</div>
+			<div class="score" data-fade>
+				<p class="score-num display">
+					{String(rating).replace(".", ",")}<span>/5</span>
+				</p>
+				<div class="stars" role="img" aria-label={`Note moyenne ${String(rating).replace(".", ",")} sur 5`}>
+					{
+						[0, 1, 2, 3, 4].map((i) => (
+							<span class="star" style={`--fill:${fill(i)}%`}>
+								<Icon name="star" class="star-bg" />
+								<Icon name="star" class="star-fg" />
+							</span>
+						))
+					}
+				</div>
+				<p class="score-text">{fr(A.ratingText)}</p>
+				<a href={contact.googleReviewsUrl} class="btn btn-line mt-5" target="_blank" rel="noopener">
+					{A.cta}
+					<Icon name="arrow" />
+				</a>
+			</div>
+		</div>
+
+		<ul class="list">
+			{
+				A.reviews.map((r, i) => (
+					<li class:list={["review", `r${i}`]} data-fade>
+						<Icon name="quote" class="quote" />
+						<blockquote>
+							<p>{fr(r.text)}</p>
+						</blockquote>
+						<p class="who">
+							<span class="name">{r.author}</span>
+							<span class="src">{A.source}</span>
+						</p>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</section>
+
+<style>
+	.avis {
+		position: relative;
+		padding-block: 6rem;
+		background: var(--color-deep);
+	}
+	@media (min-width: 1024px) {
+		.avis {
+			padding-block: 9rem;
+		}
+	}
+	.top {
+		display: flex;
+		flex-direction: column;
+		gap: 2.5rem;
+	}
+	@media (min-width: 1024px) {
+		.top {
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: flex-end;
+		}
+	}
+	.score-num {
+		font-size: clamp(5rem, 22vw, 9rem);
+		line-height: 0.85;
+		color: var(--color-gold);
+	}
+	.score-num span {
+		font-size: 0.4em;
+		color: var(--color-paper);
+		margin-left: 0.1em;
+	}
+	.stars {
+		display: flex;
+		gap: 4px;
+		margin-top: 0.9rem;
+	}
+	.star {
+		position: relative;
+		width: 26px;
+		height: 26px;
+	}
+	.star :global(svg) {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+	}
+	.star :global(.star-bg) {
+		color: var(--color-line);
+	}
+	.star :global(.star-fg) {
+		color: var(--color-gold);
+		clip-path: inset(0 calc(100% - var(--fill)) 0 0);
+	}
+	.score-text {
+		margin-top: 0.6rem;
+		font-family: var(--font-label);
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-mute);
+	}
+	.list {
+		margin-top: 3.5rem;
+		display: grid;
+		gap: 14px;
+	}
+	@media (min-width: 768px) {
+		.list {
+			grid-template-columns: repeat(6, 1fr);
+			gap: 18px;
+		}
+		.r0 {
+			grid-column: span 4;
+		}
+		.r1 {
+			grid-column: span 2;
+		}
+		.r2 {
+			grid-column: span 3;
+		}
+		.r3 {
+			grid-column: span 3;
+		}
+	}
+	.review {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		gap: 1.5rem;
+		padding: 1.75rem 1.5rem 1.5rem;
+		background: var(--color-panel);
+		border: 1px solid var(--color-line);
+		border-radius: 2px;
+	}
+	.review :global(.quote) {
+		width: 2.2rem;
+		height: 2.2rem;
+		color: var(--color-gold);
+	}
+	blockquote p {
+		font-size: 1.2rem;
+		line-height: 1.45;
+		text-wrap: pretty;
+	}
+	.r0 blockquote p {
+		font-size: clamp(1.3rem, 2.2vw, 1.75rem);
+		line-height: 1.35;
+	}
+	.who {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1rem;
+		padding-top: 1rem;
+		border-top: 1px solid var(--color-line);
+	}
+	.name {
+		font-family: var(--font-label);
+		font-weight: 700;
+		font-size: 1.1rem;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+	.src {
+		font-size: 0.85rem;
+		color: var(--color-mute);
+	}
+</style>

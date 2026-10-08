@@ -1,0 +1,24 @@
+---
+// Logo en SVG intégré à la page (animable). Les id internes sont rendus uniques par instance.
+import enseigne from "../logos/logo-enseigne.svg?raw";
+import horizontal from "../logos/logo-horizontal.svg?raw";
+import symbole from "../logos/logo-symbole.svg?raw";
+
+interface Props {
+	variant?: "enseigne" | "horizontal" | "symbole";
+	class?: string;
+	decorative?: boolean;
+}
+
+const { variant = "horizontal", class: className = "", decorative = false } = Astro.props;
+const sources = { enseigne, horizontal, symbole };
+const uid = "l" + Math.random().toString(36).slice(2, 8);
+
+let svg = sources[variant]
+	.replace(/id="lbe-/g, `id="${uid}-`)
+	.replace(/url\(#lbe-/g, `url(#${uid}-`)
+	.replace("<svg ", `<svg class="lbe-logo lbe-${variant} ${className}" focusable="false" `);
+if (decorative) svg = svg.replace(/ role="img" aria-label="[^"]*"/, ' aria-hidden="true"');
+---
+
+<Fragment set:html={svg} />

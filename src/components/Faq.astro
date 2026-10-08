@@ -1,0 +1,115 @@
+---
+import Icon from "./Icon.astro";
+import { faq as F } from "../content/site";
+import { fr } from "../lib/typo";
+---
+
+<section class="faq" data-trace aria-labelledby="faq-title">
+	<div class="wrap over">
+		<div class="layout">
+			<div>
+				<p class="label label-line">{F.label}</p>
+				<h2 id="faq-title" class="h-section mt-4">{fr(F.title)}</h2>
+			</div>
+			<div class="list" data-faq>
+				{
+					F.items.map((it, i) => (
+						<details name="faq" open={i === 0}>
+							<summary>
+								<span class="q">{fr(it.q)}</span>
+								<span class="sign" aria-hidden="true">
+									<Icon name="plus" class="size-5" />
+								</span>
+							</summary>
+							<div class="a">
+								<p>{fr(it.a)}</p>
+							</div>
+						</details>
+					))
+				}
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.faq {
+		position: relative;
+		padding-block: 6rem;
+		background: var(--color-deep);
+	}
+	@media (min-width: 1024px) {
+		.faq {
+			padding-block: 9rem;
+		}
+		.layout {
+			display: grid;
+			grid-template-columns: 5fr 7fr;
+			gap: 4rem;
+			align-items: start;
+		}
+	}
+	.list {
+		margin-top: 2.5rem;
+		border-top: 1px solid var(--color-line);
+	}
+	@media (min-width: 1024px) {
+		.list {
+			margin-top: 0.5rem;
+		}
+	}
+	details {
+		border-bottom: 1px solid var(--color-line);
+	}
+	summary {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 1.25rem;
+		padding: 1.35rem 0;
+		cursor: pointer;
+		list-style: none;
+	}
+	summary::-webkit-details-marker {
+		display: none;
+	}
+	.q {
+		font-family: var(--font-label);
+		font-weight: 700;
+		font-size: 1.3rem;
+		line-height: 1.2;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+		transition: color 0.2s;
+	}
+	summary:hover .q {
+		color: var(--color-gold);
+	}
+	.sign {
+		flex: none;
+		display: grid;
+		place-items: center;
+		width: 2rem;
+		height: 2rem;
+		border: 1px solid var(--color-line);
+		border-radius: 50%;
+		color: var(--color-gold);
+		transition:
+			transform 0.4s var(--ease-out-expo),
+			background-color 0.3s;
+	}
+	details[open] .sign {
+		transform: rotate(45deg);
+		background: rgb(214 168 74 / 0.12);
+	}
+	.a {
+		overflow: hidden;
+	}
+	.a p {
+		padding: 0 3rem 1.5rem 0;
+		color: color-mix(in srgb, var(--color-paper) 82%, transparent);
+		font-size: 1.05rem;
+		line-height: 1.6;
+		max-width: 40rem;
+	}
+</style>

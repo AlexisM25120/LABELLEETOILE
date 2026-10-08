@@ -1,0 +1,15 @@
+# dépendances et build
+node_modules/
+dist/
+.astro/
+
+# système
+.DS_Store
+*.log
+.env
+.env.*
+!.env.example
+
+# images de travail des vidéos (seules les images WebP extraites sont versionnées)
+*.mp4
+*.mov

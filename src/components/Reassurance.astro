@@ -1,0 +1,130 @@
+---
+import { reassurance } from "../content/site";
+import { fr } from "../lib/typo";
+
+const format = (v: number, decimals = 0) => v.toFixed(decimals).replace(".", ",");
+---
+
+<section class="reassure" data-trace aria-label={reassurance.label}>
+	<div class="wrap over">
+		<ul class="grid grid-cols-2 lg:grid-cols-4">
+			{
+				reassurance.items.map((it) => (
+					<li class="cell">
+						{it.kind === "number" ? (
+							<p class="big display">
+								{it.prefix && <span class="pre">{it.prefix}</span>}
+								<span data-count={it.value} data-decimals={it.decimals ?? 0}>
+									{format(it.value, it.decimals ?? 0)}
+								</span>
+								{it.suffix && <span class="suffix">{it.suffix}</span>}
+							</p>
+						) : (
+							<p class="big big-text display" data-words>
+								{fr(it.text!)}
+							</p>
+						)}
+						<p class="small">
+							{it.labelCount ? (
+								<>
+									<span data-count={it.labelCount}>{it.labelCount}</span>
+									{fr(it.label.replace(String(it.labelCount), ""))}
+								</>
+							) : (
+								fr(it.label)
+							)}
+						</p>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</section>
+
+<style>
+	.reassure {
+		position: relative;
+		padding-block: 3.5rem 4rem;
+		background: linear-gradient(180deg, var(--color-deep), var(--color-ink));
+	}
+	ul {
+		border-top: 1px solid var(--color-line);
+		border-bottom: 1px solid var(--color-line);
+	}
+	.cell {
+		padding: 1.75rem 0.25rem 1.6rem;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		gap: 0.5rem;
+		min-height: 9.5rem;
+	}
+	.cell:nth-child(odd) {
+		padding-right: 1rem;
+		border-right: 1px solid var(--color-line);
+	}
+	.cell:nth-child(even) {
+		padding-left: 1rem;
+	}
+	.cell:nth-child(-n + 2) {
+		border-bottom: 1px solid var(--color-line);
+	}
+	@media (min-width: 1024px) {
+		.cell {
+			padding: 2.25rem 1.75rem 2rem;
+			min-height: 12rem;
+			border-bottom: 0 !important;
+		}
+		.cell:not(:last-child) {
+			border-right: 1px solid var(--color-line);
+		}
+		.cell:first-child {
+			padding-left: 0;
+		}
+		.cell:nth-child(even) {
+			padding-left: 1.75rem;
+		}
+	}
+	.big {
+		font-size: clamp(2.6rem, 11vw, 4.6rem);
+		line-height: 0.9;
+		color: var(--color-paper);
+		white-space: nowrap;
+	}
+	.big-text {
+		white-space: normal;
+		font-size: clamp(1.9rem, 7.4vw, 3rem);
+		line-height: 0.95;
+	}
+	@media (min-width: 1024px) {
+		.big {
+			font-size: clamp(3rem, 5vw, 4.8rem);
+		}
+		.big-text {
+			font-size: clamp(2rem, 2.9vw, 2.9rem);
+		}
+	}
+	.pre {
+		display: block;
+		font-family: var(--font-label);
+		font-weight: 700;
+		font-size: 0.32em;
+		letter-spacing: 0.2em;
+		color: var(--color-gold);
+		margin-bottom: 0.25em;
+	}
+	.suffix {
+		color: var(--color-gold);
+		font-size: 0.55em;
+		margin-left: 0.05em;
+	}
+	.small {
+		font-family: var(--font-label);
+		font-weight: 600;
+		font-size: 0.95rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--color-mute);
+		line-height: 1.25;
+	}
+</style>

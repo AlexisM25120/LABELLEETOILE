@@ -1,0 +1,147 @@
+---
+import Logo from "./Logo.astro";
+import Icon from "./Icon.astro";
+import { footer as F, nav, contact } from "../content/site";
+import { fr } from "../lib/typo";
+
+interface Props {
+	home?: boolean;
+}
+const { home = true } = Astro.props;
+const year = new Date().getFullYear();
+const href = (h: string) => (home ? h : `/${h}`);
+---
+
+<footer class="site-footer">
+	<div class="bricks brick-texture" aria-hidden="true"></div>
+	<div class="wrap over">
+		<div class="top">
+			<div class="brand">
+				<a href={home ? "#top" : "/"} aria-label="Carrosserie La Belle Étoile, accueil">
+					<Logo variant="horizontal" class="h-12 w-auto md:h-14" decorative />
+				</a>
+				<p class="tagline">{fr(F.tagline)}</p>
+			</div>
+			<nav aria-label="Pied de page" class="cols">
+				<div>
+					<p class="label">{F.navTitle}</p>
+					<ul>
+						{
+							nav.map((n) => (
+								<li>
+									<a href={href(n.href)}>{n.label}</a>
+								</li>
+							))
+						}
+					</ul>
+				</div>
+				<div>
+					<p class="label">{F.contactTitle}</p>
+					<ul>
+						<li><a href={contact.phoneHref}>{fr(contact.phone)}</a></li>
+						<li><a href={`mailto:${contact.email}`} class="break-all">{contact.email}</a></li>
+						<li>{contact.street}, {contact.postalCode} {contact.city}</li>
+					</ul>
+				</div>
+				<div>
+					<p class="label">{F.socialTitle}</p>
+					<ul>
+						<li>
+							<a href={contact.facebookUrl} target="_blank" rel="noopener" class="inline-flex items-center gap-2">
+								<Icon name="facebook" class="size-5" /> Facebook
+							</a>
+						</li>
+					</ul>
+				</div>
+			</nav>
+		</div>
+		<div class="bottom">
+			<p>© {year} {contact.legalName}</p>
+			<ul class="legal">
+				<li><a href="/mentions-legales">{F.legal}</a></li>
+				<li><a href="/confidentialite">{F.privacy}</a></li>
+				<li>
+					{F.credit} <a href={F.creditUrl} class="underline underline-offset-4">{F.creditName}</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</footer>
+
+<style>
+	.site-footer {
+		position: relative;
+		overflow: hidden;
+		padding: 4.5rem 0 calc(6.5rem + env(safe-area-inset-bottom));
+		background: var(--color-deep);
+		border-top: 1px solid var(--color-line);
+	}
+	@media (min-width: 1024px) {
+		.site-footer {
+			padding-bottom: 3rem;
+		}
+	}
+	.bricks {
+		position: absolute;
+		inset: 0;
+		opacity: 0.07;
+		mask-image: linear-gradient(180deg, transparent, #000 70%);
+		-webkit-mask-image: linear-gradient(180deg, transparent, #000 70%);
+	}
+	.top {
+		display: grid;
+		gap: 3rem;
+	}
+	@media (min-width: 1024px) {
+		.top {
+			grid-template-columns: 4fr 7fr;
+		}
+	}
+	.tagline {
+		margin-top: 1rem;
+		color: var(--color-mute);
+		max-width: 22rem;
+	}
+	.cols {
+		display: grid;
+		gap: 2rem;
+	}
+	@media (min-width: 640px) {
+		.cols {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+	.cols ul {
+		margin-top: 0.9rem;
+		display: grid;
+		gap: 0.55rem;
+		color: color-mix(in srgb, var(--color-paper) 82%, transparent);
+	}
+	.cols a:hover {
+		color: var(--color-gold);
+	}
+	.bottom {
+		margin-top: 3.5rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--color-line);
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		font-size: 0.875rem;
+		color: var(--color-mute);
+	}
+	@media (min-width: 768px) {
+		.bottom {
+			flex-direction: row;
+			justify-content: space-between;
+		}
+	}
+	.legal {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 1.5rem;
+	}
+	.legal a:hover {
+		color: var(--color-gold);
+	}
+</style>

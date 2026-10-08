@@ -1,0 +1,63 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Loader from "../components/Loader.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import Reassurance from "../components/Reassurance.astro";
+import Realisations from "../components/Realisations.astro";
+import Prestations from "../components/Prestations.astro";
+import Pourquoi from "../components/Pourquoi.astro";
+import Etapes from "../components/Etapes.astro";
+import Avis from "../components/Avis.astro";
+import Atelier from "../components/Atelier.astro";
+import Faq from "../components/Faq.astro";
+import Final from "../components/Final.astro";
+import Footer from "../components/Footer.astro";
+import MobileBar from "../components/MobileBar.astro";
+---
+
+<Layout home>
+	<Loader />
+	<Header />
+	<div id="page" class="page">
+		<div class="trace-layer" data-trace-layer aria-hidden="true"></div>
+		<Hero />
+		<main id="contenu">
+			<div class="wrap lane-ref" data-lane-ref aria-hidden="true"></div>
+			<Reassurance />
+			<Realisations />
+			<Prestations />
+			<Pourquoi />
+			<Etapes />
+			<Avis />
+			<Atelier />
+			<Faq />
+			<Final />
+		</main>
+		<Footer />
+	</div>
+	<MobileBar />
+</Layout>
+
+<script>
+	import "../scripts/main";
+</script>
+
+<style>
+	.page {
+		position: relative;
+		overflow-x: clip;
+	}
+	.trace-layer {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		pointer-events: none;
+	}
+	.lane-ref {
+		height: 0;
+	}
+	main {
+		position: relative;
+	}
+</style>

@@ -1,0 +1,112 @@
+---
+import "@fontsource/anton/400.css";
+import "@fontsource-variable/inter/wght.css";
+import "@fontsource/barlow-condensed/600.css";
+import "@fontsource/barlow-condensed/700.css";
+import "../styles/global.css";
+import antonUrl from "@fontsource/anton/files/anton-latin-400-normal.woff2?url";
+import interUrl from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
+import MaquetteBanner from "../components/MaquetteBanner.astro";
+import { contact, meta, final } from "../content/site";
+
+interface Props {
+	title?: string;
+	description?: string;
+	home?: boolean;
+}
+
+const { title = meta.title, description = meta.description, home = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+
+const ogUrl = new URL("/og.jpg", Astro.site).href;
+
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": "AutoBodyShop",
+	"@id": new URL("/#atelier", Astro.site).href,
+	name: contact.name,
+	legalName: contact.legalName,
+	url: new URL("/", Astro.site).href,
+	image: ogUrl,
+	logo: new URL("/logo/logo-enseigne.png", Astro.site).href,
+	telephone: contact.phoneIntl,
+	email: contact.email,
+	foundingDate: String(contact.since),
+	founder: { "@type": "Person", name: contact.manager },
+	address: {
+		"@type": "PostalAddress",
+		streetAddress: contact.street,
+		postalCode: contact.postalCode,
+		addressLocality: contact.city,
+		addressRegion: contact.region,
+		addressCountry: "FR",
+	},
+	geo: { "@type": "GeoCoordinates", latitude: contact.geo.lat, longitude: contact.geo.lng },
+	openingHoursSpecification: contact.hoursSchema.map((h) => ({
+		"@type": "OpeningHoursSpecification",
+		dayOfWeek: h.days.map((d) => `https://schema.org/${d}`),
+		opens: h.opens,
+		closes: h.closes,
+	})),
+	areaServed: final.zone.map((z) => ({ "@type": "City", name: z.name })),
+	aggregateRating: {
+		"@type": "AggregateRating",
+		ratingValue: contact.rating.value,
+		reviewCount: contact.rating.count,
+		bestRating: 5,
+	},
+	sameAs: [contact.facebookUrl],
+	hasMap: contact.directionsUrl,
+};
+---
+
+<!doctype html>
+<html lang="fr" class="no-js">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+		<!-- Maquette : ne pas indexer. Retirer cette ligne à la mise en ligne. -->
+		<meta name="robots" content="noindex, nofollow" />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonical} />
+		<meta name="theme-color" content="#131417" />
+		<meta name="format-detection" content="telephone=no" />
+		<link rel="icon" href="/favicon.ico" sizes="32x32" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<link rel="preload" href={antonUrl} as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href={interUrl} as="font" type="font/woff2" crossorigin />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:locale" content="fr_FR" />
+		<meta property="og:site_name" content={contact.name} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		{ogUrl && <meta property="og:image" content={ogUrl} />}
+		{ogUrl && <meta property="og:image:width" content="1200" />}
+		{ogUrl && <meta property="og:image:height" content="630" />}
+		{ogUrl && <meta property="og:image:alt" content={meta.ogAlt} />}
+		<meta name="twitter:card" content="summary_large_image" />
+
+		<script is:inline>
+			(function () {
+				var d = document.documentElement;
+				d.classList.remove("no-js");
+				d.classList.add("js");
+				try {
+					var q = location.search;
+					if (/[?&]intro\b/.test(q)) sessionStorage.removeItem("lbe-intro");
+					if (sessionStorage.getItem("lbe-intro")) d.classList.add("intro-seen");
+				} catch (e) {}
+			})();
+		</script>
+		{home && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+	</head>
+	<body>
+		<a class="skip-link" href="#contenu">Aller au contenu</a>
+		<MaquetteBanner />
+		<slot />
+	</body>
+</html>

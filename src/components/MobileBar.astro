@@ -1,0 +1,35 @@
+---
+import Icon from "./Icon.astro";
+import { contact, mobileBar } from "../content/site";
+---
+
+<div class="mobile-bar lg:hidden" data-mobile-bar>
+	<div class="grid grid-cols-[1.25fr_1fr] gap-2.5 px-4 pt-2.5">
+		<a href={contact.phoneHref} class="btn btn-gold min-h-12 w-full">
+			<Icon name="phone" />
+			{mobileBar.call}
+		</a>
+		<a href={contact.directionsUrl} class="btn btn-line min-h-12 w-full" target="_blank" rel="noopener">
+			<Icon name="route" />
+			{mobileBar.directions}
+		</a>
+	</div>
+</div>
+
+<style>
+	.mobile-bar {
+		position: fixed;
+		inset: auto 0 0;
+		z-index: 72;
+		padding-bottom: max(10px, env(safe-area-inset-bottom));
+		background: linear-gradient(to top, color-mix(in srgb, var(--color-deep) 96%, transparent) 55%, transparent);
+		transform: translateY(110%);
+		transition: transform 0.5s var(--ease-out-expo);
+	}
+	:global(.mobile-bar.is-on) {
+		transform: none;
+	}
+	:global(html.no-js) .mobile-bar {
+		transform: none;
+	}
+</style>

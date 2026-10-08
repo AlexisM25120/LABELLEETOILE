@@ -1,0 +1,189 @@
+---
+import ServiceIcon from "./ServiceIcon.astro";
+import Icon from "./Icon.astro";
+import { prestations as P, contact, actions } from "../content/site";
+import { fr } from "../lib/typo";
+---
+
+<section id="prestations" class="sec" data-trace aria-labelledby="presta-title">
+	<div class="wrap over">
+		<div class="head" data-fade>
+			<p class="label label-line">{P.label}</p>
+			<h2 id="presta-title" class="h-section mt-4">{fr(P.title)}</h2>
+			<p class="intro">{fr(P.intro)}</p>
+		</div>
+		<ul class="grid">
+			{
+				P.items.map((it) => (
+					<li class:list={["card", it.featured && "is-featured"]} data-fade>
+						<ServiceIcon name={it.icon} class="icon" />
+						{it.tagline && <p class="tagline display">{fr(it.tagline)}</p>}
+						<h3 class="title">
+							{fr(it.title)}
+							{it.tag && <span class="tag">{it.tag}</span>}
+						</h3>
+						<p class="text">{fr(it.text)}</p>
+						<a href={contact.phoneHref} class="cta">
+							<Icon name="phone" class="size-4" />
+							{fr(actions.estimate)}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</section>
+
+<style>
+	.sec {
+		position: relative;
+		padding-block: 6rem 6rem;
+	}
+	@media (min-width: 1024px) {
+		.sec {
+			padding-block: 9rem 8rem;
+		}
+	}
+	.intro {
+		margin-top: 1.25rem;
+		max-width: 34rem;
+		color: var(--color-mute);
+		font-size: 1.05rem;
+	}
+	.grid {
+		margin-top: 3rem;
+		display: grid;
+		gap: 12px;
+	}
+	@media (min-width: 768px) {
+		.grid {
+			grid-template-columns: repeat(2, 1fr);
+			gap: 16px;
+		}
+	}
+	@media (min-width: 1024px) {
+		.grid {
+			grid-template-columns: repeat(3, 1fr);
+			margin-top: 4rem;
+		}
+	}
+	.card {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		padding: 1.6rem 1.5rem 1.4rem;
+		background: var(--color-panel);
+		border: 1px solid var(--color-line);
+		border-radius: 2px;
+		transition:
+			border-color 0.3s,
+			transform 0.4s var(--ease-out-expo);
+	}
+	.card:hover {
+		border-color: color-mix(in srgb, var(--color-gold) 45%, transparent);
+	}
+	.card :global(.icon) {
+		width: 3.6rem;
+		height: 3.6rem;
+		margin-left: -0.3rem;
+		color: var(--color-gold);
+	}
+	.title {
+		margin-top: 1.25rem;
+		font-family: var(--font-label);
+		font-weight: 700;
+		font-size: 1.45rem;
+		line-height: 1.1;
+		letter-spacing: 0.03em;
+		text-transform: uppercase;
+		text-wrap: balance;
+	}
+	.tag {
+		display: inline-block;
+		margin-left: 0.5rem;
+		padding: 0.15rem 0.45rem;
+		vertical-align: 0.2em;
+		font-size: 0.7rem;
+		letter-spacing: 0.16em;
+		color: var(--color-ink);
+		background: var(--color-gold);
+	}
+	.text {
+		margin-top: 0.6rem;
+		color: color-mix(in srgb, var(--color-paper) 78%, transparent);
+		font-size: 0.98rem;
+		line-height: 1.5;
+		flex: 1;
+	}
+	.cta {
+		margin-top: 1.4rem;
+		padding-top: 1rem;
+		border-top: 1px solid var(--color-line);
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		font-family: var(--font-label);
+		font-weight: 700;
+		font-size: 0.92rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-gold);
+	}
+	.cta:hover {
+		color: var(--color-gold-soft);
+	}
+	.is-featured {
+		background:
+			radial-gradient(120% 90% at 100% 0%, rgb(214 168 74 / 0.22), transparent 60%),
+			linear-gradient(180deg, #2a2418, #1d1a14);
+		border-color: color-mix(in srgb, var(--color-gold) 65%, transparent);
+	}
+	@media (min-width: 1024px) {
+		.is-featured {
+			grid-column: span 3;
+			display: grid;
+			grid-template-columns: auto 1fr auto;
+			grid-template-rows: auto auto auto;
+			column-gap: 2rem;
+			align-items: center;
+			padding: 2rem 2.25rem;
+		}
+		.is-featured :global(.icon) {
+			grid-row: span 3;
+			width: 4.5rem;
+			height: 4.5rem;
+		}
+		.is-featured .tagline {
+			grid-column: 2;
+		}
+		.is-featured .title,
+		.is-featured .text {
+			grid-column: 2;
+			margin-top: 0.4rem;
+		}
+		.is-featured .cta {
+			grid-column: 3;
+			grid-row: 1 / span 3;
+			margin: 0;
+			padding: 0;
+			border: 0;
+		}
+	}
+	.tagline {
+		margin-top: 1.25rem;
+		font-size: clamp(2rem, 8vw, 3rem);
+		line-height: 0.95;
+		color: var(--color-gold);
+	}
+	@media (min-width: 1024px) {
+		.tagline {
+			margin-top: 0;
+		}
+	}
+	.is-featured .cta {
+		color: var(--color-gold);
+	}
+	.is-featured .text {
+		color: var(--color-paper);
+	}
+</style>

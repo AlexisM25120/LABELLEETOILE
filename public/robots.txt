@@ -1,0 +1,3 @@
+# Maquette : ne pas indexer (la balise noindex est aussi présente sur chaque page)
+User-agent: *
+Allow: /

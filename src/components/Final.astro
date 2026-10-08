@@ -1,0 +1,302 @@
+---
+import Icon from "./Icon.astro";
+import ZoneMap from "./ZoneMap.astro";
+import { final as F, contact, actions, callback, SHOW_CALLBACK } from "../content/site";
+import { fr } from "../lib/typo";
+---
+
+<section id="contact" class="final" data-trace="final" data-trace-side="left" aria-labelledby="final-title">
+	<div class="wrap over">
+		<p class="label label-line">{F.label}</p>
+		<h2 id="final-title" class="final-title display" data-fade>{fr(F.title)}</h2>
+		<p class="intro">{fr(F.intro)}</p>
+
+		<div class="grid-f">
+			<div class="col-call">
+				<p class="label">{F.phoneLabel}</p>
+				<a href={contact.phoneHref} class="phone display" aria-label={fr(actions.callLong)}>{fr(contact.phone)}</a>
+				<div class="actions">
+					<a href={contact.phoneHref} class="btn btn-gold">
+						<Icon name="phone" />
+						{actions.call}
+					</a>
+					<a href={contact.directionsUrl} class="btn btn-line" target="_blank" rel="noopener">
+						<Icon name="route" />
+						{actions.directions}
+					</a>
+				</div>
+
+				<div class="addr" data-trace-park>
+					<div>
+						<p class="label">{F.addressLabel}</p>
+						<address>
+							{contact.street}<br />
+							{contact.postalCode} {contact.city}
+						</address>
+					</div>
+					<div>
+						<p class="label">{F.hoursLabel}</p>
+						<dl class="hours">
+							{
+								contact.hours.map((h) => (
+									<div>
+										<dt>{fr(h.days)}</dt>
+										<dd>
+											{h.time.split(" · ").map((t) => (
+												<span class="block">{fr(t)}</span>
+											))}
+										</dd>
+									</div>
+								))
+							}
+						</dl>
+					</div>
+					<p class="arrival label" data-arrival aria-hidden="true">{fr(F.arrival)}</p>
+				</div>
+
+				<ul class="links">
+					<li>
+						<Icon name="mail" class="size-5" />
+						<a href={`mailto:${contact.email}`} class="link-gold break-all">{contact.email}</a>
+					</li>
+					<li>
+						<Icon name="facebook" class="size-5" />
+						<a href={contact.facebookUrl} class="link-gold" target="_blank" rel="noopener">{F.facebookLabel} · {contact.shortName}</a>
+					</li>
+				</ul>
+			</div>
+
+			<div class="col-zone">
+				<p class="label">{F.zoneLabel}</p>
+				<div class="map" data-fade>
+					<ZoneMap />
+				</div>
+				<p class="zone-text">{fr(F.zoneText)}</p>
+
+				{
+					SHOW_CALLBACK && (
+						<form class="callback" data-callback novalidate>
+							<p class="cb-title display">{callback.title}</p>
+							<p class="cb-text">{fr(callback.text)}</p>
+							<div class="cb-fields">
+								<label>
+									<span>{callback.name}</span>
+									<input name="name" type="text" autocomplete="name" required />
+								</label>
+								<label>
+									<span>{callback.phone}</span>
+									<input name="tel" type="tel" autocomplete="tel" inputmode="tel" required />
+								</label>
+							</div>
+							<button type="submit" class="btn btn-gold w-full">
+								{callback.submit}
+							</button>
+							<p class="cb-demo">{fr(callback.demo)}</p>
+							<p class="cb-ok" role="status" data-callback-ok hidden>
+								{fr(callback.success)}
+							</p>
+						</form>
+					)
+				}
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.final {
+		position: relative;
+		padding-block: 6rem 7rem;
+	}
+	@media (min-width: 1024px) {
+		.final {
+			padding-block: 9rem 10rem;
+		}
+	}
+	.final-title {
+		margin-top: 1rem;
+		font-size: clamp(4.2rem, 19vw, 13rem);
+		line-height: 0.94;
+	}
+	.intro {
+		margin-top: 1.5rem;
+		max-width: 34rem;
+		color: color-mix(in srgb, var(--color-paper) 82%, transparent);
+		font-size: 1.1rem;
+	}
+	.grid-f {
+		margin-top: 3.5rem;
+		display: grid;
+		gap: 4rem;
+	}
+	@media (min-width: 1024px) {
+		.grid-f {
+			grid-template-columns: 7fr 5fr;
+			gap: 5rem;
+		}
+	}
+	.phone {
+		display: block;
+		margin-top: 0.75rem;
+		font-size: clamp(3.1rem, 14.5vw, 7.4rem);
+		line-height: 0.9;
+		color: var(--color-gold);
+		white-space: nowrap;
+		transition: color 0.2s;
+	}
+	.phone:hover {
+		color: var(--color-gold-soft);
+	}
+	@media (min-width: 1024px) {
+		.phone {
+			font-size: clamp(4.5rem, 6.6vw, 7.4rem);
+		}
+	}
+	.actions {
+		margin-top: 1.75rem;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+	}
+	.addr {
+		position: relative;
+		margin-top: 3rem;
+		display: grid;
+		gap: 2rem;
+		padding: 1.75rem 1.5rem;
+		background: var(--color-panel);
+		border: 1px solid var(--color-line);
+		border-radius: 2px;
+	}
+	@media (min-width: 640px) {
+		.addr {
+			grid-template-columns: 1fr 1.3fr;
+		}
+	}
+	address {
+		margin-top: 0.6rem;
+		font-style: normal;
+		font-family: var(--font-label);
+		font-weight: 700;
+		font-size: 1.5rem;
+		line-height: 1.2;
+		text-transform: uppercase;
+		letter-spacing: 0.03em;
+	}
+	.hours {
+		margin-top: 0.6rem;
+		display: grid;
+		gap: 0.35rem;
+	}
+	.hours div {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		border-bottom: 1px dashed var(--color-line);
+		padding-bottom: 0.35rem;
+	}
+	.hours dt {
+		color: var(--color-mute);
+	}
+	.hours dd {
+		font-variant-numeric: tabular-nums;
+		text-align: right;
+	}
+	.arrival {
+		position: absolute;
+		left: 1.5rem;
+		bottom: -2.4rem;
+		opacity: 0;
+		transform: translateY(6px);
+		transition:
+			opacity 0.6s,
+			transform 0.6s var(--ease-out-expo);
+	}
+	:global(.arrival.is-on) {
+		opacity: 1;
+		transform: none;
+	}
+	.links {
+		margin-top: 4.5rem;
+		display: grid;
+		gap: 0.9rem;
+	}
+	.links li {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		color: var(--color-gold);
+	}
+	.links a {
+		font-size: 1.05rem;
+	}
+	.map {
+		margin-top: 1.25rem;
+		padding: 1rem;
+		border: 1px solid var(--color-line);
+		background: radial-gradient(80% 80% at 50% 50%, rgb(214 168 74 / 0.05), transparent), var(--color-deep);
+		border-radius: 2px;
+	}
+	.zone-text {
+		margin-top: 1rem;
+		color: var(--color-mute);
+		font-size: 0.95rem;
+	}
+
+	.callback {
+		margin-top: 3rem;
+		padding: 1.75rem 1.5rem;
+		border: 1px solid color-mix(in srgb, var(--color-gold) 50%, transparent);
+		background: var(--color-panel);
+	}
+	.cb-title {
+		font-size: 2.2rem;
+		line-height: 1;
+	}
+	.cb-text {
+		margin-top: 0.5rem;
+		color: var(--color-mute);
+	}
+	.cb-fields {
+		margin: 1.25rem 0;
+		display: grid;
+		gap: 0.9rem;
+	}
+	.cb-fields label {
+		display: grid;
+		gap: 0.35rem;
+		font-family: var(--font-label);
+		font-weight: 600;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		font-size: 0.85rem;
+		color: var(--color-mute);
+	}
+	.cb-fields input {
+		min-height: 3rem;
+		padding: 0.7rem 0.9rem;
+		font: inherit;
+		font-family: var(--font-sans);
+		font-size: 1rem;
+		letter-spacing: 0;
+		text-transform: none;
+		color: var(--color-paper);
+		background: var(--color-ink);
+		border: 1px solid var(--color-line);
+		border-radius: 2px;
+	}
+	.cb-fields input:focus {
+		border-color: var(--color-gold);
+		outline: none;
+	}
+	.cb-demo {
+		margin-top: 0.75rem;
+		font-size: 0.8rem;
+		color: var(--color-mute);
+	}
+	.cb-ok {
+		margin-top: 1rem;
+		color: var(--color-gold);
+		font-weight: 600;
+	}
+</style>

@@ -1,0 +1,489 @@
+---
+// « Ça sort de l'atelier » : galerie horizontale épinglée (tablette et ordinateur),
+// carrousel au doigt sur mobile. Photo Facebook prioritaire, sinon photo de secours, sinon visuel sobre.
+import Photo from "./Photo.astro";
+import Icon from "./Icon.astro";
+import Logo from "./Logo.astro";
+import { realisations as R, contact } from "../content/site";
+import { photo, facebookPhoto } from "../lib/photos";
+import { fr } from "../lib/typo";
+
+const [first, ...rest] = R.projects;
+const ba = first.beforeAfter!;
+const before = photo(ba.before);
+const after = facebookPhoto(first.id) ?? photo(ba.after);
+const cards = rest.map((p, i) => ({
+	...p,
+	index: String(i + 2).padStart(2, "0"),
+	img: facebookPhoto(p.id) ?? (p.photo ? photo(p.photo) : undefined),
+}));
+const cardSizes = "(max-width: 767px) 82vw, 34vw";
+---
+
+<section id="realisations" class="gal" data-trace data-trace-side="right" data-gallery aria-label={fr(R.title)}>
+	<div class="gal-pin" data-gal-pin>
+		<!-- En-tête mobile -->
+		<div class="wrap over gal-head md:hidden">
+			<p class="label label-line">{R.label}</p>
+			<h2 class="h-section mt-4">{fr(R.title)}</h2>
+			<p class="gal-intro">{fr(R.intro)}</p>
+		</div>
+
+		<div class="gal-viewport over" data-gal-viewport>
+			<ol class="gal-track no-scrollbar" data-gal-track>
+				<!-- En-tête intégré à la bande (tablette et ordinateur) -->
+				<li class="gal-title-panel hidden md:flex">
+					<p class="label label-line">{R.label}</p>
+					<h2 class="h-section mt-5">{fr(R.title)}</h2>
+					<p class="gal-intro">{fr(R.intro)}</p>
+					<p class="gal-scroll-hint" aria-hidden="true">
+						<Icon name="arrow" class="size-5" />
+						Défilez
+					</p>
+				</li>
+
+				<!-- 01 · Avant / après -->
+				<li class="card card-ba">
+					<div class="media ba" data-ba style="--pos:50%">
+						{after && <Photo src={after} alt={fr(ba.altAfter)} sizes="(max-width: 767px) 82vw, 60vw" class="ba-img" draggable={false} />}
+						<div class="ba-before" aria-hidden="false">
+							{before && <Photo src={before} alt={fr(ba.altBefore)} sizes="(max-width: 767px) 82vw, 60vw" class="ba-img" draggable={false} />}
+						</div>
+						<span class="ba-tag ba-tag-l">{R.before}</span>
+						<span class="ba-tag ba-tag-r">{R.after}</span>
+						<div class="ba-handle" data-ba-handle aria-hidden="true">
+							<span class="ba-line"></span>
+							<span class="ba-knob"><Icon name="drag" class="size-5" /></span>
+						</div>
+						<input class="ba-range" type="range" min="0" max="100" value="50" step="1" aria-label={fr(R.sliderLabel)} data-ba-range />
+					</div>
+					<div class="meta">
+						<p class="label meta-top"><span>01</span>{first.date && <span>{fr(first.date)}</span>}</p>
+						<h3 class="model display">
+							{fr(first.model)} <span class="detail">{fr(first.detail)}</span>
+						</h3>
+						<p class="work">{fr(ba.caption)}</p>
+					</div>
+				</li>
+
+				{
+					cards.map((c) => (
+						<li class="card">
+							<div class:list={["media", !c.img && "is-placeholder"]}>
+								{c.img ? (
+									<Photo src={c.img} alt={fr(c.alt ?? c.model)} sizes={cardSizes} class="card-img" />
+								) : (
+									<div class="ph" role="img" aria-label={`${fr(c.model)} : ${R.placeholder.toLowerCase()}`}>
+										<Logo variant="symbole" class="ph-mark" decorative />
+										<span class="ph-name display" aria-hidden="true">
+											{fr(c.model)}
+										</span>
+										<span class="ph-tag label">{R.placeholder}</span>
+									</div>
+								)}
+							</div>
+							<div class="meta">
+								<p class="label meta-top">
+									<span>{c.index}</span>
+									{c.date && <span>{fr(c.date)}</span>}
+								</p>
+								<h3 class="model display">
+									{fr(c.model)} {c.detail && <span class="detail">{fr(c.detail)}</span>}
+								</h3>
+								<p class="work">{fr(c.work)}</p>
+							</div>
+						</li>
+					))
+				}
+
+				<li class="card card-fb">
+					<a href={contact.facebookUrl} class="fb" target="_blank" rel="noopener">
+						<span class="fb-icon"><Icon name="facebook" class="size-7" /></span>
+						<span class="fb-title display">{fr(R.facebook.title)}</span>
+						<span class="fb-text">{fr(R.facebook.text)}</span>
+						<span class="fb-cta label">
+							{R.facebook.cta}
+							<Icon name="arrow" class="size-4" />
+						</span>
+					</a>
+				</li>
+			</ol>
+		</div>
+
+		<div class="wrap over gal-foot">
+			<div class="gal-progress" aria-hidden="true"><span data-gal-bar></span></div>
+			<p class="gal-swipe md:hidden" aria-hidden="true">
+				<Icon name="drag" class="size-4" />
+				{R.swipeHint}
+			</p>
+		</div>
+	</div>
+</section>
+
+<style>
+	.gal {
+		position: relative;
+		background: var(--color-ink);
+	}
+	.gal-pin {
+		position: relative;
+		padding-block: 5rem 3rem;
+		background: var(--color-ink);
+	}
+	.gal-intro {
+		margin-top: 1rem;
+		color: var(--color-mute);
+		font-size: 1.05rem;
+		max-width: 28rem;
+	}
+	.gal-track {
+		display: flex;
+		gap: 14px;
+		margin-top: 2.25rem;
+		padding-inline: 16px;
+		overflow-x: auto;
+		scroll-snap-type: x mandatory;
+		scroll-padding-inline: 16px;
+		overscroll-behavior-x: contain;
+		-webkit-overflow-scrolling: touch;
+	}
+	.card {
+		flex: none;
+		width: 82vw;
+		scroll-snap-align: start;
+		display: flex;
+		flex-direction: column;
+	}
+	.media {
+		position: relative;
+		aspect-ratio: 4 / 5;
+		overflow: hidden;
+		background: var(--color-panel);
+		border-radius: 2px;
+	}
+	.media :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.meta {
+		padding: 1rem 0.1rem 0;
+	}
+	.meta-top {
+		display: flex;
+		gap: 0.9rem;
+		color: var(--color-gold);
+	}
+	.meta-top span + span {
+		color: var(--color-mute);
+	}
+	.model {
+		margin-top: 0.5rem;
+		font-size: clamp(1.9rem, 8vw, 2.6rem);
+		line-height: 0.95;
+	}
+	.detail {
+		color: var(--color-gold);
+	}
+	.work {
+		margin-top: 0.5rem;
+		color: color-mix(in srgb, var(--color-paper) 82%, transparent);
+		font-size: 0.98rem;
+		line-height: 1.45;
+	}
+
+	/* Visuel de remplacement */
+	.ph {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		padding: 1.25rem;
+		background:
+			linear-gradient(160deg, rgb(255 255 255 / 0.04), transparent 45%),
+			radial-gradient(90% 60% at 80% 10%, rgb(214 168 74 / 0.1), transparent 60%),
+			var(--color-panel);
+		border: 1px solid var(--color-line);
+	}
+	.ph :global(.ph-mark) {
+		position: absolute;
+		top: 1.25rem;
+		right: 1.25rem;
+		width: 3.2rem;
+		height: auto;
+		opacity: 0.55;
+	}
+	.ph-name {
+		font-size: clamp(3rem, 15vw, 5.4rem);
+		line-height: 0.88;
+		color: transparent;
+		-webkit-text-stroke: 1.2px color-mix(in srgb, var(--color-paper) 55%, transparent);
+		overflow-wrap: anywhere;
+	}
+	.ph-tag {
+		margin-top: 1rem;
+		color: var(--color-mute);
+	}
+
+	/* Avant / après */
+	.ba {
+		touch-action: pan-y;
+		user-select: none;
+		-webkit-user-select: none;
+	}
+	.ba :global(picture),
+	.ba :global(.ba-img) {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.ba-before {
+		position: absolute;
+		inset: 0;
+		clip-path: inset(0 calc(100% - var(--pos)) 0 0);
+	}
+	.ba-tag {
+		position: absolute;
+		top: 0.9rem;
+		z-index: 2;
+		padding: 0.35rem 0.6rem;
+		font-family: var(--font-label);
+		font-weight: 700;
+		font-size: 0.78rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		background: rgb(12 13 15 / 0.72);
+		color: var(--color-paper);
+	}
+	.ba-tag-l {
+		left: 0.9rem;
+	}
+	.ba-tag-r {
+		right: 0.9rem;
+		color: var(--color-gold);
+	}
+	.ba-handle {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: var(--pos);
+		width: 56px;
+		margin-left: -28px;
+		z-index: 3;
+		cursor: ew-resize;
+		touch-action: none;
+	}
+	.ba-line {
+		position: absolute;
+		left: 50%;
+		top: 0;
+		bottom: 0;
+		width: 2px;
+		margin-left: -1px;
+		background: var(--color-gold);
+		box-shadow: 0 0 12px rgb(0 0 0 / 0.5);
+	}
+	.ba-knob {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		translate: -50% -50%;
+		display: grid;
+		place-items: center;
+		width: 46px;
+		height: 46px;
+		border-radius: 50%;
+		background: var(--color-gold);
+		color: var(--color-ink);
+		box-shadow: 0 6px 20px rgb(0 0 0 / 0.45);
+	}
+	.ba-range {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		opacity: 0;
+		pointer-events: none;
+	}
+	.ba:has(.ba-range:focus-visible) .ba-knob {
+		outline: 2px solid var(--color-paper);
+		outline-offset: 3px;
+	}
+
+	/* Carte Facebook */
+	.card-fb .fb {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		gap: 1rem;
+		aspect-ratio: 4 / 5;
+		padding: 1.5rem;
+		border: 1px solid color-mix(in srgb, var(--color-gold) 45%, transparent);
+		background: radial-gradient(120% 80% at 100% 0%, rgb(214 168 74 / 0.16), transparent 60%), var(--color-deep);
+		transition:
+			border-color 0.3s,
+			background-color 0.3s;
+	}
+	.card-fb .fb:hover {
+		border-color: var(--color-gold);
+	}
+	.fb-icon {
+		position: absolute;
+		top: 1.5rem;
+		left: 1.5rem;
+		display: grid;
+		place-items: center;
+		width: 3.25rem;
+		height: 3.25rem;
+		border-radius: 50%;
+		border: 1px solid var(--color-gold);
+		color: var(--color-gold);
+	}
+	.fb-title {
+		font-size: clamp(2rem, 8.5vw, 2.9rem);
+		line-height: 0.95;
+	}
+	.fb-text {
+		color: var(--color-mute);
+	}
+	.fb-cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.gal-foot {
+		margin-top: 1.75rem;
+		display: flex;
+		align-items: center;
+		gap: 1.25rem;
+	}
+	.gal-progress {
+		position: relative;
+		flex: 1;
+		height: 2px;
+		background: var(--color-line);
+		overflow: hidden;
+	}
+	.gal-progress span {
+		position: absolute;
+		inset: 0;
+		background: var(--color-gold);
+		transform-origin: 0 50%;
+		transform: scaleX(0.08);
+	}
+	.gal-swipe {
+		display: inline-flex;
+		flex: none;
+		align-items: center;
+		gap: 0.4rem;
+		font-family: var(--font-label);
+		font-weight: 600;
+		font-size: 0.8rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--color-mute);
+	}
+
+	/* Tablette et ordinateur : la bande défile horizontalement, la section reste en place */
+	@media (min-width: 768px) {
+		.gal-pin {
+			position: sticky;
+			top: 0;
+			height: 100vh;
+			height: 100svh;
+			padding: calc(var(--banner-h) + 72px) 0 0;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			overflow: hidden;
+			z-index: 3;
+		}
+		.gal-viewport {
+			overflow: visible;
+		}
+		.gal-track {
+			margin-top: 0;
+			overflow: visible;
+			scroll-snap-type: none;
+			gap: 28px;
+			padding-inline: 64px;
+			align-items: flex-end;
+			will-change: transform;
+		}
+		.gal-title-panel {
+			flex: none;
+			width: min(34rem, 44vw);
+			flex-direction: column;
+			justify-content: flex-end;
+			padding-right: 2rem;
+			padding-bottom: 7.5rem;
+		}
+		.gal-scroll-hint {
+			margin-top: 2rem;
+			display: inline-flex;
+			align-items: center;
+			gap: 0.6rem;
+			font-family: var(--font-label);
+			font-weight: 600;
+			font-size: 0.85rem;
+			letter-spacing: 0.2em;
+			text-transform: uppercase;
+			color: var(--color-gold);
+		}
+		.gal {
+			--mh: min(58svh, 600px);
+		}
+		.card {
+			width: calc(var(--mh) * 0.8);
+		}
+		.card-ba {
+			width: calc(var(--mh) * 1.5);
+		}
+		.media,
+		.card-fb .fb {
+			width: 100%;
+			height: var(--mh);
+			aspect-ratio: auto;
+		}
+		.model {
+			font-size: clamp(1.8rem, 2.6vw, 2.6rem);
+		}
+		.fb-title {
+			font-size: clamp(2rem, 3vw, 2.9rem);
+		}
+		.ph-name {
+			font-size: clamp(3rem, 5.4vw, 5.6rem);
+		}
+		.gal-foot {
+			margin-top: 2rem;
+			margin-bottom: 2.5rem;
+		}
+		.gal-swipe {
+			display: none;
+		}
+	}
+	@media (min-width: 1024px) {
+		.gal-track {
+			padding-inline: 120px;
+		}
+	}
+	@media (min-width: 1320px) {
+		.gal-track {
+			padding-left: calc((100vw - 1320px) / 2 + 120px);
+		}
+	}
+	@media (min-width: 768px) and (prefers-reduced-motion: reduce) {
+		.gal-pin {
+			position: relative;
+			height: auto;
+		}
+		.gal-track {
+			overflow-x: auto;
+			padding-bottom: 1rem;
+		}
+	}
+</style>

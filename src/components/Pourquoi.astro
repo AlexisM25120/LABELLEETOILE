@@ -1,0 +1,176 @@
+---
+import Photo from "./Photo.astro";
+import { pourquoi as W } from "../content/site";
+import { photo } from "../lib/photos";
+import { fr } from "../lib/typo";
+
+const img = photo("serie3-pont");
+const n = (i: number) => String(i + 1).padStart(2, "0");
+const [a, b, c, d] = W.items;
+---
+
+<section class="why" data-trace aria-labelledby="why-title">
+	<div class="wrap over">
+		<p class="label label-line">{W.label}</p>
+		<h2 id="why-title" class="h-section mt-4 max-w-[12ch]">{fr(W.title)}</h2>
+
+		<ol class="items">
+			<li class="item i1" data-fade>
+				<span class="num outline-text display" aria-hidden="true">{n(0)}</span>
+				<div class="body">
+					<h3 class="title display">{fr(a.title)}</h3>
+					<p class="text">{fr(a.text)}</p>
+				</div>
+			</li>
+
+			<li class="item i2" data-fade>
+				<span class="num num-gold display" aria-hidden="true">{n(1)}</span>
+				<div class="body">
+					<h3 class="title display">{fr(b.title)}</h3>
+					<p class="text">{fr(b.text)}</p>
+				</div>
+			</li>
+
+			<li class="item i3" data-fade>
+				{
+					img && (
+						<figure class="pic">
+							<Photo src={img} alt={fr(W.imageAlt)} sizes="(max-width: 767px) 92vw, 46vw" />
+						</figure>
+					)
+				}
+				<div class="body">
+					<span class="num outline-text display" aria-hidden="true">{n(2)}</span>
+					<h3 class="title display">{fr(c.title)}</h3>
+					<p class="text">{fr(c.text)}</p>
+				</div>
+			</li>
+
+			<li class="item i4" data-fade>
+				<div class="body">
+					<span class="num num-small display" aria-hidden="true">{n(3)}</span>
+					<h3 class="title title-xl display">{fr(d.title)}</h3>
+					<p class="text">{fr(d.text)}</p>
+				</div>
+			</li>
+		</ol>
+	</div>
+</section>
+
+<style>
+	.why {
+		position: relative;
+		padding-block: 6rem;
+		background: linear-gradient(180deg, var(--color-ink), var(--color-deep) 60%, var(--color-ink));
+	}
+	@media (min-width: 1024px) {
+		.why {
+			padding-block: 9rem;
+		}
+	}
+	.items {
+		margin-top: 3.5rem;
+		display: flex;
+		flex-direction: column;
+		gap: 4rem;
+	}
+	.num {
+		display: block;
+		font-size: clamp(5.5rem, 26vw, 13rem);
+		line-height: 0.8;
+	}
+	.num-gold {
+		color: var(--color-gold);
+	}
+	.num-small {
+		font-size: clamp(3rem, 12vw, 5rem);
+		color: var(--color-gold);
+	}
+	.title {
+		font-size: clamp(2rem, 8.5vw, 3.4rem);
+		line-height: 0.95;
+		margin-top: 1rem;
+		text-wrap: balance;
+	}
+	.title-xl {
+		font-size: clamp(2.6rem, 12vw, 6.4rem);
+	}
+	.text {
+		margin-top: 0.9rem;
+		max-width: 30rem;
+		color: color-mix(in srgb, var(--color-paper) 80%, transparent);
+		font-size: 1.05rem;
+		line-height: 1.55;
+	}
+	.pic {
+		position: relative;
+		overflow: hidden;
+		aspect-ratio: 4 / 3;
+		border-radius: 2px;
+	}
+	.pic :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.pic::after {
+		content: "";
+		position: absolute;
+		inset: auto 0 0;
+		height: 40%;
+		background: linear-gradient(0deg, rgb(12 13 15 / 0.6), transparent);
+	}
+	.i3 .body {
+		margin-top: 1.75rem;
+	}
+	.i4 {
+		padding-top: 2.5rem;
+		border-top: 1px solid var(--color-line);
+	}
+
+	@media (min-width: 768px) {
+		.items {
+			gap: 6rem;
+			margin-top: 5rem;
+		}
+		.item {
+			display: grid;
+			grid-template-columns: repeat(12, 1fr);
+			column-gap: 24px;
+			align-items: end;
+		}
+		.i1 .num {
+			grid-column: 1 / span 5;
+		}
+		.i1 .body {
+			grid-column: 6 / span 7;
+			padding-bottom: 0.6rem;
+		}
+		.i2 .num {
+			grid-column: 8 / span 5;
+			grid-row: 1;
+			text-align: right;
+		}
+		.i2 .body {
+			grid-column: 2 / span 6;
+			grid-row: 1;
+			padding-bottom: 0.6rem;
+		}
+		.i3 {
+			align-items: center;
+		}
+		.i3 .pic {
+			grid-column: 1 / span 7;
+		}
+		.i3 .body {
+			grid-column: 8 / span 5;
+			margin-top: 0;
+		}
+		.i3 .num {
+			font-size: clamp(5rem, 10vw, 9rem);
+		}
+		.i4 .body {
+			grid-column: 3 / span 10;
+		}
+	}
+</style>
