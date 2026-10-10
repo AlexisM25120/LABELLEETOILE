@@ -1,5 +1,7 @@
 ---
+import Photo from "./Photo.astro";
 import { etapes as E } from "../content/site";
+import { photoByFile } from "../lib/realisations";
 import { fr } from "../lib/typo";
 ---
 
@@ -16,6 +18,11 @@ import { fr } from "../lib/typo";
 						<li class:list={["step", i % 2 ? "is-right" : "is-left"]} data-step>
 							<span class="marker" aria-hidden="true" />
 							<div class="step-body" data-fade>
+								{s.photo && (
+									<figure class="step-pic">
+										<Photo src={photoByFile(s.photo).img} alt={fr(photoByFile(s.photo).alt)} sizes="(max-width: 767px) 40vw, 12rem" widths={[240, 400]} position={photoByFile(s.photo).focus} />
+									</figure>
+								)}
 								<p class="step-num display" aria-hidden="true">
 									{String(i + 1).padStart(2, "0")}
 								</p>
@@ -86,6 +93,19 @@ import { fr } from "../lib/typo";
 	:global(html.no-js) .marker {
 		background: var(--color-gold);
 	}
+	.step-pic {
+		width: min(42vw, 11rem);
+		aspect-ratio: 4 / 5;
+		margin: 0 0 1rem;
+		overflow: hidden;
+		border-radius: 2px;
+		background: var(--color-panel);
+	}
+	.step-pic :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
 	.step-num {
 		font-size: 3.2rem;
 		line-height: 0.85;
@@ -137,6 +157,12 @@ import { fr } from "../lib/typo";
 			justify-self: end;
 			text-align: right;
 			padding-right: 4.5rem;
+		}
+		.is-left .step-pic {
+			margin-left: auto;
+		}
+		.step-pic {
+			width: 12rem;
 		}
 		.is-right .step-body {
 			grid-column: 2;

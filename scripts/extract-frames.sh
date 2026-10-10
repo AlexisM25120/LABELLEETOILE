@@ -12,6 +12,12 @@ if [ -z "$VIDEO" ] || [ -z "$NAME" ]; then
 	echo "Usage : npm run frames -- <video.mp4> <porte|depart> [nombre d'images, 60 par défaut]"
 	exit 1
 fi
+# Sécurité : ne jamais écraser des images déjà livrées (le raccord porte → départ est calé au pixel)
+if [ "$FORCE" != "1" ] && ls "assets/frames/$NAME"/*.webp >/dev/null 2>&1; then
+	echo "assets/frames/$NAME contient déjà des images : rien n'est remplacé."
+	echo "Pour écraser volontairement : FORCE=1 npm run frames -- $VIDEO $NAME"
+	exit 1
+fi
 TMP="$(mktemp -d)"
 DUR=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$VIDEO")
 FPS=$(echo "$COUNT / $DUR" | bc -l)

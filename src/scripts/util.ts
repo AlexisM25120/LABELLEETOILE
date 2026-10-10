@@ -58,6 +58,24 @@ export function sampleBeziers(segs: [Pt, Pt, Pt, Pt][], step = 6): Sample[] {
 	return out;
 }
 
+/** Courbe lisse (Catmull-Rom) passant par tous les points, en segments de Bézier cubiques */
+export function catmullRom(pts: Pt[]): [Pt, Pt, Pt, Pt][] {
+	const segs: [Pt, Pt, Pt, Pt][] = [];
+	for (let i = 0; i < pts.length - 1; i++) {
+		const p0 = pts[Math.max(0, i - 1)];
+		const p1 = pts[i];
+		const p2 = pts[i + 1];
+		const p3 = pts[Math.min(pts.length - 1, i + 2)];
+		segs.push([
+			p1,
+			{ x: p1.x + (p2.x - p0.x) / 6, y: p1.y + (p2.y - p0.y) / 6 },
+			{ x: p2.x - (p3.x - p1.x) / 6, y: p2.y - (p3.y - p1.y) / 6 },
+			p2,
+		]);
+	}
+	return segs;
+}
+
 /** Polyligne décalée parallèlement (offset > 0 : côté gauche), en chaîne SVG */
 export function offsetPath(samples: Sample[], offset: number | ((s: Sample, i: number) => number), from = 0, to = samples.length - 1): string {
 	let d = "";

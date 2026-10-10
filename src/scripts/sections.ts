@@ -1,4 +1,4 @@
-// Interactions des sections : compteurs, galerie, avant/après, FAQ, apparitions, ancres.
+// Interactions des sections : compteurs, galerie, avant/après, mur, FAQ, apparitions, ancres.
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type Lenis from "lenis";
@@ -112,57 +112,59 @@ export function initGallery(lenis: Lenis | undefined) {
 	});
 }
 
-export function initBeforeAfter(reduced: boolean) {
-	document.querySelectorAll<HTMLElement>("[data-ba]").forEach((ba) => {
-		const range = ba.querySelector<HTMLInputElement>("[data-ba-range]")!;
-		const handle = ba.querySelector<HTMLElement>("[data-ba-handle]")!;
-		const state = { pos: 50 };
-		const set = (p: number) => {
-			state.pos = clamp(p, 0, 100);
-			ba.style.setProperty("--pos", `${state.pos}%`);
-			range.value = String(Math.round(state.pos));
+/** Carte avant / après : onglets entre les deux paires (flèches du clavier comprises) */
+export function initPairs() {
+	document.querySelectorAll<HTMLElement>("[data-pair]").forEach((card) => {
+		const tabs = [...card.querySelectorAll<HTMLButtonElement>("[data-pair-tab]")];
+		const panels = [...card.querySelectorAll<HTMLElement>("[data-pair-panel]")];
+		const select = (i: number, focus = false) => {
+			tabs.forEach((t, k) => {
+				t.setAttribute("aria-selected", String(k === i));
+				t.tabIndex = k === i ? 0 : -1;
+			});
+			panels.forEach((p, k) => (p.hidden = k !== i));
+			if (focus) tabs[i].focus();
 		};
-		let dragging = false;
-		let demo: gsap.core.Tween | null = null;
-		const fromX = (x: number) => {
-			const r = ba.getBoundingClientRect();
-			set(((x - r.left) / r.width) * 100);
-		};
-		const down = (e: PointerEvent) => {
-			dragging = true;
-			demo?.kill();
-			fromX(e.clientX);
-			e.preventDefault();
-		};
-		handle.addEventListener("pointerdown", down);
-		ba.addEventListener("pointerdown", (e) => {
-			if (e.pointerType === "mouse" && e.target !== handle) down(e);
+		tabs.forEach((t, i) => {
+			t.addEventListener("click", () => select(i));
+			t.addEventListener("keydown", (e) => {
+				if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+				e.preventDefault();
+				select((i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length, true);
+			});
 		});
-		window.addEventListener("pointermove", (e) => dragging && fromX(e.clientX));
-		window.addEventListener("pointerup", () => (dragging = false));
-		window.addEventListener("pointercancel", () => (dragging = false));
-		range.addEventListener("input", () => {
-			demo?.kill();
-			set(Number(range.value));
-		});
+	});
+}
 
-		if (reduced) return;
-		// petite démonstration la première fois que la photo est bien visible
-		const io = new IntersectionObserver(
-			(entries) => {
-				if (!entries.some((e) => e.isIntersecting)) return;
-				io.disconnect();
-				demo = gsap.to(state, {
-					keyframes: [{ pos: 24 }, { pos: 76 }, { pos: 50 }],
-					duration: 2.6,
-					ease: "power2.inOut",
-					delay: 0.3,
-					onUpdate: () => set(state.pos),
-				});
-			},
-			{ threshold: 0.6 },
+/** Mur de réalisations : parallaxe des colonnes (ordinateur) et légendes au toucher */
+export function initMur(reduced: boolean) {
+	const mur = document.querySelector<HTMLElement>("[data-mur]");
+	if (!mur) return;
+	const items = [...mur.querySelectorAll<HTMLElement>("[data-mur-toggle]")];
+	items.forEach((btn) =>
+		btn.addEventListener("click", () => {
+			const li = btn.closest("li")!;
+			const open = !li.classList.contains("is-open");
+			items.forEach((b) => {
+				b.closest("li")!.classList.remove("is-open");
+				b.setAttribute("aria-pressed", "false");
+			});
+			li.classList.toggle("is-open", open);
+			btn.setAttribute("aria-pressed", String(open));
+		}),
+	);
+	if (reduced) return;
+	const mm = gsap.matchMedia();
+	mm.add("(min-width: 768px)", () => {
+		const speeds = [70, -50, 130];
+		const tweens = [...mur.querySelectorAll<HTMLElement>("[data-mur-col]")].map((col, i) =>
+			gsap.fromTo(
+				col,
+				{ y: speeds[i] },
+				{ y: -speeds[i], ease: "none", scrollTrigger: { trigger: mur, start: "top bottom", end: "bottom top", scrub: true } },
+			),
 		);
-		io.observe(ba);
+		return () => tweens.forEach((t) => (t.scrollTrigger?.kill(), t.kill()));
 	});
 }
 

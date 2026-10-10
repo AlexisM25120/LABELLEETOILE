@@ -25,6 +25,21 @@ export function facebookPhoto(prefix: string): ImageMetadata | undefined {
 	return keys.length ? files[keys[0]].default : undefined;
 }
 
+/** Toutes les photos Facebook d'un projet (`<prefixe>-01.jpg`, `-02.jpg`…), dans l'ordre naturel */
+export function facebookPhotos(prefix: string): { file: string; img: ImageMetadata }[] {
+	const re = new RegExp(`^${prefix.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}-\\d+$`);
+	return Object.keys(files)
+		.filter((k) => k.includes("/assets/photos/facebook/") && re.test(stem(k)))
+		.sort(natural.compare)
+		.map((k) => ({ file: stem(k), img: files[k].default }));
+}
+
+/** Une photo Facebook par son nom de fichier sans extension (ex. "bmw-estoril-01") */
+export function facebookFile(name: string): ImageMetadata | undefined {
+	const key = Object.keys(files).find((k) => k.includes("/assets/photos/facebook/") && stem(k) === name.toLowerCase());
+	return key ? files[key].default : undefined;
+}
+
 /** Largeurs utiles pour srcset, sans dépasser la taille d'origine */
 export function widthsFor(img: ImageMetadata, wanted: number[]): number[] {
 	const list = wanted.filter((w) => w < img.width);

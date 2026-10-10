@@ -13,7 +13,12 @@ Chaque correction se fait dans `src/content/site.ts`.
 - [ ] **Équipe** : Sébastien travaille-t-il seul ? Faut-il présenter d'autres personnes ?
 - [ ] **Délais** : quel délai moyen peut-on annoncer, ou faut-il rester sur « annoncé avec le devis » ?
 - [ ] **Fichier du logo** : le fabricant de l'enseigne a-t-il le fichier vectoriel d'origine ? Le logo de la maquette est un redessin d'après photo.
-- [ ] **Photos** : peut-on venir prendre des photos nettes (façade, atelier, Sébastien, cabine) ? Celles de la maquette sont en basse définition.
+- [ ] **Photos** : peut-on venir prendre des photos nettes de Sébastien et de la cabine ? Les réalisations viennent de sa page Facebook ; il manque encore son portrait.
+- [ ] **Droit à l'image** : accord de Sébastien pour publier sur le site les photos de sa page Facebook (89 photos retenues, plaques floutées, liste dans `SELECTION-PHOTOS.md`). Les propriétaires des voitures ont-ils été d'accord pour Facebook, et le sont-ils pour le site ?
+- [ ] **Deuxième numéro** : l'ancienne enseigne de la façade affichait aussi le **09 54 68 32 83**. On l'affiche sur le site, ou seulement le portable 06 52 78 36 23 ?
+- [ ] **Logo** : la photo de profil de la page Facebook (`ref-logo-facebook-01.jpg` : badge rond noir et or, berline noire, étoile, pistolet à peinture, « La Belle Étoile » en lettres manuscrites et le 06 52 78 36 23) n'est pas le logo de l'enseigne de la façade (croissant et étoile dorés, « Exigence · Qualité · Passion »). Lequel est officiel ? La maquette utilise celui de l'enseigne. L'ancienne façade blanche avait encore un troisième logo (voiture rouge).
+- [ ] **Ancienneté** : la page Facebook montre l'atelier dès décembre 2020 (`atelier-facade-03`) et des chantiers dès avril 2021, alors que le site annonce « depuis 2017 » (date de création de l'entreprise individuelle). Garder 2017 ? Et l'atelier était-il déjà rue de la Gare ?
+- [ ] **Prestations vues dans les photos et absentes du site** (à proposer, pas ajoutées) : peinture de jantes (`jantes-noires`), utilitaires et pick-up (`toyota-hilux`, `dodge-ram`, `pickup-noir`, `utilitaire-blanc`, `renault-espace`), réparations lourdes de structure (`audi-a6-allroad`, `toyota-land-cruiser`). Le mur de réalisations en montre déjà certaines.
 
 ## 2. Textes inventés, à relire
 
@@ -51,16 +56,19 @@ Toutes les réponses sont inventées, **sauf la loi Hamon** (libre choix du rép
 - Motos et anciennes : « Oui : peinture moto, restauration et peinture complète d'anciennes. »
 - Pare-brise : « Oui, remplacement et réparation, avec prise en charge par votre assurance bris de glace. »
 
-### Réalisations (« Ça sort de l'atelier »)
-Modèles relevés sur la page Facebook. **Les descriptions de travaux sont à confirmer**, ainsi que les mois :
-- BMW Série 3 bleu Estoril — reprise d'aile et de portière, raccord teinte · septembre 2026 (publication du 14/09)
-- BMW 525i de 1990 — peinture complète · décembre 2025 (publication du 09/12/2025)
-- BMW E30 cabriolet — préparation et peinture · **mois inconnu**
-- Porsche Panamera GTS — réparation et raccord de peinture · **mois inconnu**
-- Renault Super 5 GT — restauration de carrosserie · **mois inconnu**
-- Ducati 996 — peinture du carénage · mars 2026
-- Cabine de peinture, pièces peintes en cabine : sans date
-- Le comparateur avant/après associe deux photos différentes (aile rayée / voiture terminée). À remplacer par une vraie paire avant/après prise sous le même angle.
+### Réalisations (« Ça sort de l'atelier » et le mur)
+Toutes les photos viennent de la page Facebook. Les dates affichées sont **les mois de publication Facebook**, pas forcément ceux des travaux. Les « travaux » sont déduits des légendes et des photos.
+- **BMW Série 3 bleu Estoril** : « peinture complète » (légende de Sébastien), septembre 2026. La photo « avant » (`bmw-estoril-04`, Série 3 argent sur le pont) est **supposée être la même voiture** : à confirmer, sinon remplacer par une autre photo avant.
+- **Toyota Land Cruiser** (paire « réparation » de l'avant / après) : novembre 2021, photos d'arrivée et de sortie sous un angle proche.
+- Modèles ou travaux marqués « à confirmer » dans la bibliothèque, publiés avec un titre prudent :
+  - Porsche Panamera GTS (`panamera-gts-01`) : modèle sûr, **travail à confirmer** (« réparation du hayon et raccord de peinture »).
+  - BMW E30 cabriolet (`bmw-e30-01`) : modèle sûr, **teinte d'origine à confirmer** (blanche préparée, puis jaune).
+  - Renault Super 5 arceautée (`super5-gt-02`) : **modèle à confirmer** (GT Turbo ?). Titre affiché : « Renault Super 5 · caisse arceautée ».
+  - Audi bleue (`audi-a3-bleue-05`) : titre générique « Audi bleue » (A3 Sportback ?).
+  - Audi berline bleue (`audi-s3-bleue-02`) : titre générique (S3 ?).
+  - Citadine jaune (`audi-a1-jaune-02`) : titre générique (Audi A1 ?).
+  - Renault Espace (`renault-espace-02`) : **travail à confirmer** (changement de teinte ?). Affiché : « préparation et peinture ».
+- Projets écartés faute de modèle identifiable ou de photo nette : voir `SELECTION-PHOTOS.md`.
 
 ### Zone d'intervention
 - Charquemont, Maîche, Damprichard, Le Russey, Frambouhans, Trévillers, Fournet-Blancheroche : liste supposée. La carte est stylisée et les positions sont approximatives.
@@ -81,7 +89,8 @@ Modèles relevés sur la page Facebook. **Les descriptions de travaux sont à co
 ## 4. Options à présenter
 
 - [ ] **Bloc « Être rappelé »** (nom + téléphone) : désactivé, à montrer seulement s'il est ouvert à l'idée (`SHOW_CALLBACK = true`).
-- [ ] **Hero vidéo** : la maquette tourne avec le hero de secours (photo + porte animée) tant que les vidéos Higgsfield ne sont pas déposées.
+- [ ] **Hero vidéo (en place)** : la porte s'ouvre, la Mustang attend phares allumés puis sort en laissant ses traces, qui passent à l'or. Vidéo générée par IA à partir de la façade : demander à Sébastien si la façade, la porte et l'atelier lui semblent fidèles, et s'il est d'accord pour une voiture « façon Mustang » sans logo.
+- [ ] **Enseigne dans la vidéo** : l'IA a déformé le texte (« EXICENCE »). Le logo redessiné est posé par-dessus pendant toute la vidéo. À faire valider : couleurs, proportions, et sur téléphone le logo réduit sur le panneau.
 
 ## 5. À signaler au rendez-vous
 

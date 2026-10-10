@@ -169,6 +169,8 @@ export function runLoader({ root, hero, progress, reduced }: LoaderOptions): Pro
 			cancelAnimationFrame(raf);
 			root.style.display = "none";
 			hero.sign.style.visibility = "";
+			const logo = hero.sign.querySelector<SVGElement>("svg");
+			if (logo) logo.style.visibility = "";
 			gsap.set(hero.zoom, { clearProps: "transform,transformOrigin" });
 			resolve();
 		};
@@ -190,7 +192,8 @@ export function runLoader({ root, hero, progress, reduced }: LoaderOptions): Pro
 
 			gsap.set(signBox, { clearProps: "transform" });
 			Object.assign(signBox.style, { inset: "auto", margin: "0", left: `${r0.left}px`, top: `${r0.top}px`, width: `${r0.width}px` });
-			hero.sign.style.visibility = "hidden";
+			// on cache le logo de la scène, pas son panneau : l'enseigne de la vidéo reste masquée
+			hero.sign.querySelector<SVGElement>("svg")!.style.visibility = "hidden";
 			hero.zoom.style.transformOrigin = `${cx}px ${cy}px`;
 			gsap.set(hero.zoom, { scale: sceneFrom });
 			gsap.set(signBox, { transformOrigin: "0 0", x: 0, y: 0, xPercent: 0, yPercent: 0, scale: 1 });

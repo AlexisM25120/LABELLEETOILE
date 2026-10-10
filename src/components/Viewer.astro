@@ -1,0 +1,225 @@
+---
+// Visionneuse plein écran d'un projet : photos à faire glisser (mobile), flèches et Échap (clavier),
+// focus piégé, compteur « 3 / 7 », légende par photo, et une fin « Votre voiture mérite le même soin ».
+// Chaque projet est rendu dans un <template> : ses images ne se chargent qu'à l'ouverture.
+import Photo from "./Photo.astro";
+import Icon from "./Icon.astro";
+import { realisations as R, contact, actions } from "../content/site";
+import type { Project } from "../content/site";
+import { fullName, monthLabel, projectPhotos } from "../lib/realisations";
+import { fr } from "../lib/typo";
+
+interface Props {
+	projects: Project[];
+}
+const { projects } = Astro.props;
+const V = R.viewer;
+---
+
+<div class="vw" data-viewer role="dialog" aria-modal="true" aria-labelledby="vw-title" aria-describedby="vw-work" hidden data-lenis-prevent>
+	<div class="vw-top">
+		<div class="vw-head">
+			<p id="vw-title" class="vw-title display" data-vw-title></p>
+			<p id="vw-work" class="vw-work" data-vw-work></p>
+		</div>
+		<p class="vw-count label" data-vw-count aria-live="polite"></p>
+		<button type="button" class="vw-btn vw-close" data-vw-close aria-label={V.close}>
+			<Icon name="close" class="size-6" />
+		</button>
+	</div>
+	<div class="vw-track no-scrollbar" data-vw-track aria-label={V.label}></div>
+	<button type="button" class="vw-btn vw-nav vw-prev" data-vw-prev aria-label={V.prev}>
+		<Icon name="left" class="size-6" />
+	</button>
+	<button type="button" class="vw-btn vw-nav vw-next" data-vw-next aria-label={V.next}>
+		<Icon name="arrow" class="size-6" />
+	</button>
+</div>
+
+{
+	projects.map((p) => {
+		const photos = projectPhotos(p);
+		return (
+			<template data-vw-project={p.id} data-title={fr(fullName(p))} data-work={[fr(p.work), monthLabel(p.date)].filter(Boolean).join(" · ")}>
+				{photos.map((ph, i) => (
+					<figure class="vw-slide" data-vw-slide aria-roledescription="photo" aria-label={`${i + 1} / ${photos.length}`}>
+						<div class="vw-frame">
+							<Photo src={ph.img} alt={fr(ph.alt)} sizes="(orientation: portrait) 100vw, 72vh" widths={[640, 960, 1280, 1536]} formats={[]} />
+						</div>
+						<figcaption class="vw-cap">{fr(ph.caption)}</figcaption>
+					</figure>
+				))}
+				<div class="vw-slide vw-end" data-vw-end>
+					<p class="vw-end-title display">{fr(V.endTitle)}</p>
+					<p class="vw-end-text">{fr(V.endText)}</p>
+					<a href={contact.phoneHref} class="btn btn-gold">
+						<Icon name="phone" />
+						{actions.call}
+					</a>
+				</div>
+			</template>
+		);
+	})
+}
+
+<style>
+	.vw {
+		position: fixed;
+		inset: 0;
+		z-index: 120;
+		display: flex;
+		flex-direction: column;
+		background: #0c0d0f;
+		overscroll-behavior: contain;
+		padding-bottom: env(safe-area-inset-bottom);
+	}
+	.vw[hidden] {
+		display: none;
+	}
+	.vw-top {
+		display: grid;
+		grid-template-columns: 1fr auto auto;
+		align-items: center;
+		gap: 1rem;
+		padding: calc(10px + env(safe-area-inset-top)) 12px 10px 16px;
+	}
+	@media (min-width: 768px) {
+		.vw-top {
+			padding: 18px 20px 12px 28px;
+		}
+	}
+	.vw-head {
+		min-width: 0;
+	}
+	.vw-title {
+		font-size: clamp(1.5rem, 5vw, 2.2rem);
+		line-height: 1;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.vw-work {
+		margin-top: 0.3rem;
+		font-size: 0.9rem;
+		color: var(--color-mute);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.vw-count {
+		font-size: 0.95rem;
+		color: var(--color-paper);
+		font-variant-numeric: tabular-nums;
+	}
+	.vw-btn {
+		display: grid;
+		place-items: center;
+		width: 48px;
+		height: 48px;
+		border-radius: 50%;
+		color: var(--color-paper);
+		background: rgb(255 255 255 / 0.06);
+		border: 1px solid rgb(255 255 255 / 0.12);
+		cursor: pointer;
+		transition:
+			background-color 0.2s,
+			color 0.2s,
+			opacity 0.2s;
+	}
+	.vw-btn:hover {
+		color: var(--color-gold);
+		background: rgb(255 255 255 / 0.1);
+	}
+	.vw-btn:disabled {
+		opacity: 0.25;
+		cursor: default;
+	}
+	.vw-track {
+		flex: 1;
+		min-height: 0;
+		display: flex;
+		overflow-x: auto;
+		overflow-y: hidden;
+		scroll-snap-type: x mandatory;
+		overscroll-behavior-x: contain;
+		-webkit-overflow-scrolling: touch;
+		outline: none;
+	}
+	.vw-slide {
+		flex: 0 0 100%;
+		min-width: 0;
+		height: 100%;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.75rem;
+		padding: 0 0 14px;
+		scroll-snap-align: center;
+		scroll-snap-stop: always;
+	}
+	.vw-frame {
+		flex: 1;
+		min-height: 0;
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.vw-frame :global(picture) {
+		display: contents;
+	}
+	.vw-frame :global(img) {
+		max-width: 100%;
+		max-height: 100%;
+		width: auto;
+		height: auto;
+		object-fit: contain;
+	}
+	.vw-cap {
+		padding: 0 16px;
+		font-family: var(--font-label);
+		font-weight: 600;
+		font-size: 1rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: color-mix(in srgb, var(--color-paper) 85%, transparent);
+		text-align: center;
+	}
+	.vw-end {
+		padding: 0 24px 40px;
+		text-align: center;
+		gap: 1.25rem;
+	}
+	.vw-end-title {
+		max-width: 12ch;
+		font-size: clamp(2.6rem, 11vw, 5.5rem);
+		/* place pour les accents des capitales (MÉRITE, MÊME) */
+		line-height: 1.05;
+	}
+	.vw-end-text {
+		max-width: 26rem;
+		color: var(--color-mute);
+	}
+	.vw-nav {
+		position: absolute;
+		top: 50%;
+		translate: 0 -50%;
+		display: none;
+	}
+	.vw-prev {
+		left: 20px;
+	}
+	.vw-next {
+		right: 20px;
+	}
+	@media (min-width: 768px) and (hover: hover) {
+		.vw-nav {
+			display: grid;
+		}
+		.vw-slide {
+			padding-inline: 96px;
+		}
+	}
+</style>

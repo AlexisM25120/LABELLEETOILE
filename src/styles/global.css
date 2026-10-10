@@ -70,6 +70,12 @@ html.lenis body {
 	overscroll-behavior: contain;
 }
 
+/* Visionneuse ouverte : la page derrière ne défile pas */
+html.vw-open,
+html.vw-open body {
+	overflow: hidden;
+}
+
 /* Pendant l'écran d'accueil, la page ne défile pas */
 html.is-loading,
 html.is-loading body {

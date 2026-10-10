@@ -12,18 +12,25 @@ interface Props {
 	class?: string;
 	loading?: "lazy" | "eager";
 	draggable?: boolean;
+	/** Point gardé au recadrage (object-position), ex. "40% 55%" */
+	position?: string;
+	formats?: ("avif" | "webp" | "jpeg")[];
+	/** Format de l'<img> de secours (WebP : lu par tous les navigateurs actuels, plus léger que le JPEG) */
+	fallbackFormat?: "webp" | "jpeg";
 }
-const { src, alt, sizes, widths = [400, 640, 960, 1280], class: className, loading = "lazy", draggable } = Astro.props;
+const { src, alt, sizes, widths = [400, 640, 960, 1280], class: className, loading = "lazy", draggable, position, formats = ["avif"], fallbackFormat = "webp" } = Astro.props;
 ---
 
 <Picture
 	src={src}
 	alt={alt}
-	formats={["avif", "webp"]}
+	formats={formats}
+	fallbackFormat={fallbackFormat}
 	widths={widthsFor(src, widths)}
 	sizes={sizes}
 	loading={loading}
 	decoding="async"
 	class={className}
 	draggable={draggable === false ? "false" : undefined}
+	style={position ? `object-position:${position}` : undefined}
 />

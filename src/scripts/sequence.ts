@@ -29,11 +29,29 @@ function pump() {
 	}
 }
 
+// La file démarre au microtask suivant : toutes les demandes faites dans le même tour
+// (les deux séquences de loadRest) sont triées ensemble avant le premier envoi.
+let scheduled = false;
+function schedulePump() {
+	if (scheduled) return;
+	scheduled = true;
+	queueMicrotask(() => {
+		scheduled = false;
+		pump();
+	});
+}
+
 function loadImage(url: string, priority: number) {
 	return new Promise<HTMLImageElement | null>((resolve) => {
 		queue.push({ url, resolve, priority });
-		pump();
+		schedulePump();
 	});
+}
+
+/** Ordre de chargement « du grossier au fin » : 1 image sur 8, puis 1 sur 4, puis 1 sur 2, puis les autres.
+ * Le défilement est utilisable tout de suite, la fluidité arrive au fil du chargement. */
+function level(i: number) {
+	return i % 8 === 0 ? 0 : i % 4 === 0 ? 1 : i % 2 === 0 ? 2 : 3;
 }
 
 export class FrameSequence {
@@ -42,6 +60,8 @@ export class FrameSequence {
 	set: FrameSet;
 	images: (HTMLImageElement | null)[];
 	focus = { x: 0.5, y: 0.5 };
+	/** Appelé après chaque dessin (le hero retire alors la photo de secours) */
+	onDraw?: () => void;
 	current = -1;
 	drawn = -1;
 	loaded = 0;
@@ -61,13 +81,13 @@ export class FrameSequence {
 	}
 
 	/** Charge les images [from, to) ; `onEach` reçoit le nombre d'images prêtes */
-	load(from: number, to: number, priority: number, onEach?: () => void) {
+	load(from: number, to: number, priority: number, onEach?: () => void, step = 1) {
 		const jobs: Promise<void>[] = [];
-		for (let i = from; i < Math.min(to, this.count); i++) {
+		for (let i = from; i < Math.min(to, this.count); i += step) {
 			if (this.loadingStarted.has(i)) continue;
 			this.loadingStarted.add(i);
 			jobs.push(
-				loadImage(this.set.urls[i], priority + i / 1000).then((img) => {
+				loadImage(this.set.urls[i], priority + level(i) * 10 + i / 1000).then((img) => {
 					this.images[i] = img;
 					this.loaded++;
 					onEach?.();
@@ -115,5 +135,6 @@ export class FrameSequence {
 		const c = cover(img.naturalWidth, img.naturalHeight, bw, bh, this.focus.x, this.focus.y);
 		this.ctx.drawImage(img, c.x, c.y, c.w, c.h);
 		this.drawn = k;
+		this.onDraw?.();
 	}
 }

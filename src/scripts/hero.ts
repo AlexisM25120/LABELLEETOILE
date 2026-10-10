@@ -2,10 +2,10 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FrameSequence, type FrameSet } from "./sequence";
-import { clamp, cover, easeInOut, isMobile, lerp, pointAt, range, ribbonPath, sampleBeziers, svgEl, type Box, type Pt, type Sample } from "./util";
+import { catmullRom, clamp, cover, easeInOut, isMobile, lerp, pointAt, range, ribbonPath, sampleBeziers, svgEl, type Box, type Pt, type Sample } from "./util";
 
 type Rect = { x: number; y: number; w: number; h: number };
-type SceneSetup = { focus: Pt; sign: Rect; door: Rect; traceFrom: Pt; traceExit: Pt };
+type SceneSetup = { focus: Pt; sign: Rect; door: Rect; traceFrom: Pt; traceExit: Pt; marks?: Pt[][] };
 type Setup = {
 	facade: { desktop: SceneSetup; mobile: SceneSetup };
 	frames: { desktop: SceneSetup; mobile: SceneSetup };
@@ -73,6 +73,10 @@ export class Hero {
 	private bridgeFrom = 0;
 	private exitPoint: Pt = { x: 0, y: 0 };
 	exitDir: Pt = { x: 0, y: 1 };
+	/** Demi-écartement des traces à la sortie du hero (la trace du site part de là et se resserre) */
+	exitHalf = 0;
+	/** Traces dorées posées sur les traces réelles de la vidéo */
+	private markMasks: SVGPathElement[] = [];
 	private calage: HTMLElement;
 	private doorPanel: HTMLElement | null;
 	private interior: HTMLElement | null;
@@ -108,6 +112,8 @@ export class Hero {
 		const porte = this.pick(this.manifest.porte);
 		this.mode = porte ? "frames" : "fallback";
 		root.dataset.mode = this.mode;
+		// sert au CSS (couleur du panneau de l'enseigne, aussi sur l'écran d'accueil)
+		document.documentElement.dataset.heroMode = this.mode;
 
 		if (porte) {
 			const canvases = root.querySelectorAll<HTMLCanvasElement>("[data-canvas]");
@@ -121,6 +127,7 @@ export class Hero {
 			this.sceneSetup = this.setup.facade[this.variant];
 		}
 		for (const s of [this.seq1, this.seq2]) if (s) s.focus = this.sceneSetup.focus;
+		if (this.seq1) this.seq1.onDraw = () => this.root.classList.add("poster-off");
 	}
 
 	/** Dossier mobile si présent sur petit écran, sinon desktop (et inversement) */
@@ -137,10 +144,16 @@ export class Hero {
 
 	/** Préchargement pour l'écran d'accueil : première partie de la séquence 1, ou la photo */
 	preload(onProgress: (done: number, total: number) => void): Promise<void> {
+		if (this.mode === "frames" && this.seq1 && this.reduced) {
+			// mouvement réduit : une seule image fixe, la dernière de la porte (phares allumés)
+			return this.seq1.load(this.seq1.count - 1, this.seq1.count, 0, () => onProgress(1, 1)).then(() => undefined);
+		}
 		if (this.mode === "frames" && this.seq1) {
-			const n = Math.min(this.setup.timing.preloadFrames, this.seq1.count);
+			// 1 image sur `step`, répartie sur toute la séquence 1 (chargement du grossier au fin)
+			const step = Math.max(1, Math.floor(this.seq1.count / this.setup.timing.preloadFrames));
+			const n = Math.ceil(this.seq1.count / step);
 			let done = 0;
-			const first = this.seq1.load(0, n, 0, () => onProgress(++done, n));
+			const first = this.seq1.load(0, this.seq1.count, 0, () => onProgress(++done, n), step);
 			return first.then(() => undefined);
 		}
 		const img = this.poster;
@@ -160,8 +173,10 @@ export class Hero {
 
 	/** Reste de la séquence 1 puis séquence 2, en arrière-plan */
 	loadRest() {
-		if (!this.seq1) return;
-		this.seq1.load(0, this.seq1.count, 1).then(() => this.seq2?.load(0, this.seq2.count, 2));
+		if (!this.seq1 || this.reduced) return;
+		// Les deux séquences en parallèle : la file partagée sert d'abord le grossier des deux, puis le fin
+		this.seq1.load(0, this.seq1.count, 1);
+		this.seq2?.load(0, this.seq2.count, 2);
 	}
 
 	sceneToScreen(p: Pt): Pt {
@@ -173,9 +188,32 @@ export class Hero {
 		return { x: a.x, y: a.y, w: r.w * this.view.w, h: r.h * this.view.h };
 	}
 
-	/** Rectangle de l'enseigne à l'écran (zoom 1) */
+	/** Rectangle du logo posé sur l'enseigne, à l'écran (zoom 1) */
 	signRect(): Box {
-		return this.rectToScreen(this.sceneSetup.sign);
+		return this.logoBox ?? this.rectToScreen(this.sceneSetup.sign);
+	}
+
+	/** Logo réduit quand l'enseigne déborde de l'écran (mobile en portrait) */
+	private logoBox: Box | null = null;
+
+	private fitLogo() {
+		const svg = this.sign.querySelector<SVGSVGElement>("svg");
+		if (!svg) return;
+		const R = this.rectToScreen(this.sceneSetup.sign);
+		const margin = 12;
+		const left = Math.max(R.x, margin);
+		const right = Math.min(R.x + R.w, this.view.W - margin);
+		this.logoBox = null;
+		svg.removeAttribute("style");
+		if (this.mode !== "frames" || right - left >= R.w - 1) return;
+		// l'enseigne est plus large que l'écran : le panneau reste pleine largeur, le logo tient dans la partie visible
+		const aspect = svg.viewBox.baseVal.width / svg.viewBox.baseVal.height || 1000 / 256;
+		const h = Math.min(R.h, (right - left) / aspect);
+		const w = h * aspect;
+		const x = left + (right - left - w) / 2;
+		const y = R.y + (R.h - h) / 2;
+		this.logoBox = { x, y, w, h };
+		Object.assign(svg.style, { position: "absolute", left: `${x - R.x}px`, top: `${y - R.y}px`, width: `${w}px`, height: `${h}px` });
 	}
 
 	layout() {
@@ -197,9 +235,17 @@ export class Hero {
 			height: `${c.h}px`,
 		});
 		this.scene.classList.add("is-placed");
+		// bord gauche de la porte à l'écran : le titre se cale à sa gauche sur grand écran
+		// (--inner-left : décalage du conteneur centré, pour caler le texte sur le bord de l'écran)
+		const door = this.rectToScreen(this.sceneSetup.door);
+		const inner = this.root.querySelector<HTMLElement>(".hero-ui-inner");
+		const offset = inner ? inner.getBoundingClientRect().left : 0;
+		this.root.style.setProperty("--door-x", `${Math.round(door.x)}px`);
+		this.root.style.setProperty("--inner-left", `${Math.round(offset)}px`);
 		// en mode images, l'enseigne suit les réglages « frames »
 		const s = this.sceneSetup.sign;
 		Object.assign(this.sign.style, { left: `${s.x * 100}%`, top: `${s.y * 100}%`, width: `${s.w * 100}%`, height: `${s.h * 100}%` });
+		this.fitLogo();
 		this.seq1?.resize(W, H);
 		this.seq2?.resize(W, H);
 		this.buildFx();
@@ -223,6 +269,13 @@ export class Hero {
 		this.fx.setAttribute("viewBox", `0 0 ${W} ${H}`);
 		const defs = svgEl("defs");
 		this.fx.append(defs);
+
+		this.markMasks = [];
+		this.exitHalf = 0;
+		if (this.mode === "frames" && this.sceneSetup.marks?.length) {
+			this.buildMarks(defs, W, H, m);
+			return;
+		}
 
 		let from: Pt;
 		let exit: Pt;
@@ -324,6 +377,57 @@ export class Hero {
 		}
 	}
 
+	/** Mode images : l'or se pose sur les deux traces réelles de la vidéo, de la porte à la sortie du cadre */
+	private buildMarks(defs: SVGDefsElement, W: number, H: number, m: ReturnType<typeof traceMetrics>) {
+		this.bridgeMask = undefined;
+		this.marksMask = undefined;
+		const grad = svgEl("linearGradient", { id: "hero-marks-grad", gradientUnits: "userSpaceOnUse", x1: 0, y1: H * 0.75, x2: 0, y2: H });
+		grad.append(svgEl("stop", { offset: 0, "stop-color": "#d6a84a", "stop-opacity": 0.7 }));
+		grad.append(svgEl("stop", { offset: 1, "stop-color": "#d6a84a", "stop-opacity": 0.4 }));
+		defs.append(grad);
+		// largeur des traces de la vidéo (≈ 16 px sur 1280) à l'échelle de l'écran
+		const half = Math.max(4, (16 / 1280) * this.view.w) / 2;
+		const exits: { x: number; dir: Pt }[] = [];
+		this.sceneSetup.marks!.forEach((line, i) => {
+			const pts = line.map((p) => this.sceneToScreen(p));
+			const S = sampleBeziers(catmullRom(pts), 4);
+			const id = `hero-mark-${i}`;
+			const mask = svgEl("mask", { id, maskUnits: "userSpaceOnUse", x: -W, y: -H, width: W * 3, height: H * 3 });
+			const mp = svgEl("path", {
+				d: S.map((s, k) => (k ? "L" : "M") + s.x.toFixed(1) + " " + s.y.toFixed(1)).join(""),
+				fill: "none",
+				stroke: "#fff",
+				"stroke-width": half * 6,
+				pathLength: 1,
+				"stroke-dasharray": "1 1",
+				"stroke-dashoffset": 1,
+			});
+			mask.append(mp);
+			defs.append(mask);
+			this.markMasks.push(mp);
+			const g = svgEl("g", { mask: `url(#${id})`, fill: "url(#hero-marks-grad)" });
+			g.append(svgEl("path", { d: ribbonPath(S, () => 0, (s) => half * (0.75 + 0.25 * (s.len / S[S.length - 1].len))) }));
+			this.fx.append(g);
+			// sortie visible à l'écran ? (sur mobile, la trace gauche sort du champ)
+			const last = S[S.length - 1];
+			const prev = S[Math.max(0, S.length - 6)];
+			if (last.x >= -2 && last.x <= W + 2) {
+				const d = Math.hypot(last.x - prev.x, last.y - prev.y) || 1;
+				exits.push({ x: last.x, dir: { x: (last.x - prev.x) / d, y: (last.y - prev.y) / d } });
+			}
+		});
+		// la trace du site part entre les sorties visibles, avec leur écartement
+		if (!exits.length) exits.push({ x: m.pair ? W * 0.3 : m.lane, dir: { x: 0, y: 1 } });
+		const xs = exits.map((e) => e.x);
+		const cx = (Math.min(...xs) + Math.max(...xs)) / 2;
+		this.exitPoint = { x: cx, y: H };
+		this.exitHalf = m.pair ? (Math.max(...xs) - Math.min(...xs)) / 2 : 0;
+		const dx = exits.reduce((a, e) => a + e.dir.x, 0);
+		const dy = exits.reduce((a, e) => a + e.dir.y, 0);
+		const dl = Math.hypot(dx, dy) || 1;
+		this.exitDir = { x: dx / dl, y: dy / dl };
+	}
+
 	// ---------------------------------------------------------------------------
 	setupScroll() {
 		const st = (start: () => number, end: () => number, set: (p: number) => void) =>
@@ -380,14 +484,23 @@ export class Hero {
 		});
 		this.motto.style.visibility = any ? "visible" : "hidden";
 
-		this.root.classList.toggle("in-depart", p2 > 0);
-
 		if (this.mode === "frames") {
-			this.seq1?.setProgress(p1);
+			// mouvement réduit : image fixe de fin de porte, textes conservés
+			this.seq1?.setProgress(this.reduced ? 1 : p1);
 			if (this.seq2) this.seq2.setProgress(p2);
 			if (this.seq1 && this.seq1.drawn >= 0) this.root.classList.add("poster-off");
+			// la séquence 2 ne passe devant que si elle a déjà une image à montrer
+			// (sinon la dernière image de la porte, identique, reste affichée)
+			this.root.classList.toggle("in-depart", p2 > 0 && !!this.seq2 && this.seq2.drawn >= 0);
 		} else {
+			this.root.classList.toggle("in-depart", p2 > 0);
 			this.renderFallback();
+		}
+
+		// Mode images : les traces de la vidéo passent à l'or quand la voiture a quitté le cadre
+		if (this.markMasks.length) {
+			const t = range(p2, T.traceStart, 1);
+			for (const mk of this.markMasks) mk.setAttribute("stroke-dashoffset", String(1 - t));
 		}
 
 		// Départ doré de la trace (à 70 % de la séquence 2)

@@ -1,10 +1,10 @@
 ---
 import Photo from "./Photo.astro";
 import { pourquoi as W } from "../content/site";
-import { photo } from "../lib/photos";
+import { photoByFile } from "../lib/realisations";
 import { fr } from "../lib/typo";
 
-const img = photo("serie3-pont");
+const pic = photoByFile(W.photo);
 const n = (i: number) => String(i + 1).padStart(2, "0");
 const [a, b, c, d] = W.items;
 ---
@@ -32,13 +32,9 @@ const [a, b, c, d] = W.items;
 			</li>
 
 			<li class="item i3" data-fade>
-				{
-					img && (
-						<figure class="pic">
-							<Photo src={img} alt={fr(W.imageAlt)} sizes="(max-width: 767px) 92vw, 46vw" />
-						</figure>
-					)
-				}
+				<figure class="pic">
+					<Photo src={pic.img} alt={fr(pic.alt)} sizes="(max-width: 767px) 92vw, 46vw" widths={[480, 720, 960]} position={W.photoFocus} />
+				</figure>
 				<div class="body">
 					<span class="num outline-text display" aria-hidden="true">{n(2)}</span>
 					<h3 class="title display">{fr(c.title)}</h3>

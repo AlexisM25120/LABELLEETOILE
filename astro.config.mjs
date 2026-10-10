@@ -2,6 +2,7 @@
 import { defineConfig } from "astro/config";
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import tailwindcss from "@tailwindcss/vite";
 
 const FRAMES_DIR = path.resolve("assets/frames");
@@ -35,8 +36,10 @@ function heroFrames() {
 				});
 			},
 			"astro:build:done": ({ dir }) => {
+				pruneUnusedImages(fileURLToPath(dir));
 				if (!fs.existsSync(FRAMES_DIR)) return;
-				const dest = path.join(dir.pathname, "frames");
+				// fileURLToPath : le chemin du projet contient des espaces (dir.pathname les garderait encodés)
+				const dest = path.join(fileURLToPath(dir), "frames");
 				fs.cpSync(FRAMES_DIR, dest, {
 					recursive: true,
 					filter: (src) => !path.basename(src).startsWith("."),
@@ -44,6 +47,34 @@ function heroFrames() {
 			},
 		},
 	};
+}
+
+// Astro copie l'original de chaque photo importée dans dist/_astro/ même s'il n'est jamais servi
+// (les pages n'utilisent que les versions AVIF/WebP redimensionnées) : on retire ces originaux inutilisés.
+function pruneUnusedImages(distDir) {
+	const assets = path.join(distDir, "_astro");
+	if (!fs.existsSync(assets)) return;
+	const texts = [];
+	const walk = (d) => {
+		for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+			const p = path.join(d, e.name);
+			if (e.isDirectory()) {
+				if (e.name !== "frames") walk(p);
+			} else if (/\.(html|css|js|json|xml|txt)$/.test(e.name)) texts.push(fs.readFileSync(p, "utf8"));
+		}
+	};
+	walk(distDir);
+	const all = texts.join("\n");
+	let removed = 0;
+	let bytes = 0;
+	for (const f of fs.readdirSync(assets)) {
+		if (!/\.(jpe?g|png)$/i.test(f) || all.includes(f)) continue;
+		const p = path.join(assets, f);
+		bytes += fs.statSync(p).size;
+		fs.rmSync(p);
+		removed++;
+	}
+	if (removed) console.log(`[lbe] ${removed} originaux inutilisés retirés de dist/_astro (${(bytes / 1048576).toFixed(1)} Mo)`);
 }
 
 // URL publique : variable SITE_URL, sinon celle fournie par Netlify ou Vercel, sinon le domaine prévu.

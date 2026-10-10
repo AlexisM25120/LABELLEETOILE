@@ -1,0 +1,322 @@
+---
+// Mur de réalisations : bandeau des marques (texte seul), puis photos en colonnes.
+// Ordinateur : 3 colonnes qui défilent à des vitesses différentes. Mobile : 2 colonnes, sans parallaxe.
+// Survol ou toucher : modèle et travail.
+import Photo from "./Photo.astro";
+import Icon from "./Icon.astro";
+import { mur as M, realisations as R, contact } from "../content/site";
+import { fullName, inSection, photoByFile } from "../lib/realisations";
+import { fr } from "../lib/typo";
+
+const items = inSection("mur").flatMap((p) => (p.wall ?? [p.photos[0].file]).map((file) => ({ project: p, photo: photoByFile(file) })));
+// répartition en 3 colonnes (ordinateur) ; sur mobile, les colonnes s'effacent au profit de 2 colonnes CSS
+const cols: (typeof items)[] = [[], [], []];
+items.forEach((it, i) => cols[i % 3].push(it));
+// rythme du mur : quelques photos plus hautes ou plus carrées
+const shapes = ["tall", "", "square", "", "", "tall", "square", ""];
+const brands = M.brands.join(" · ") + " · ";
+---
+
+<section id="mur" class="mur" data-trace aria-labelledby="mur-title">
+	<div class="marquee" role="img" aria-label={`${M.brandsLabel} : ${M.brands.join(", ")}`}>
+		<div class="marquee-track" aria-hidden="true">
+			<span>{brands}</span><span>{brands}</span>
+		</div>
+	</div>
+
+	<div class="wrap over">
+		<div class="head">
+			<p class="label label-line">{M.label}</p>
+			<h2 id="mur-title" class="h-section mt-4">{fr(M.title)}</h2>
+			<p class="intro">{fr(M.intro)}</p>
+			<p class="tap-hint" aria-hidden="true"><Icon name="plus" class="size-4" />{M.tapHint}</p>
+		</div>
+
+		<div class="cols" data-mur>
+			{
+				cols.map((col, c) => (
+					<ul class="col" data-mur-col={c}>
+						{col.map(({ project: p, photo }, k) => (
+							<li class:list={["item", shapes[(c * 3 + k) % shapes.length]]}>
+								<figure>
+									<Photo src={photo.img} alt={fr(photo.alt)} sizes="(max-width: 767px) 46vw, 30vw" widths={[320, 480, 720]} position={photo.focus} />
+									<figcaption class="cap" id={`mur-${photo.file}`}>
+										<span class="cap-model">{fr(fullName(p))}</span>
+										<span class="cap-work">{fr(p.work)}</span>
+									</figcaption>
+								</figure>
+								<button type="button" class="hit" aria-pressed="false" aria-describedby={`mur-${photo.file}`} data-mur-toggle>
+									<span class="sr-only">{fr(fullName(p))}</span>
+								</button>
+							</li>
+						))}
+					</ul>
+				))
+			}
+		</div>
+
+		<a href={contact.facebookUrl} class="fb" target="_blank" rel="noopener">
+			<span class="fb-icon"><Icon name="facebook" class="size-7" /></span>
+			<span class="fb-body">
+				<span class="fb-title display">{fr(R.facebook.title)}</span>
+				<span class="fb-text">{fr(R.facebook.text)}</span>
+			</span>
+			<span class="fb-cta label">
+				{R.facebook.cta}
+				<Icon name="arrow" class="size-4" />
+			</span>
+		</a>
+	</div>
+</section>
+
+<style>
+	.mur {
+		position: relative;
+		padding-block: 0 6rem;
+		background: var(--color-ink);
+		overflow: hidden;
+	}
+	@media (min-width: 1024px) {
+		.mur {
+			padding-bottom: 9rem;
+		}
+	}
+
+	/* Bandeau des marques */
+	.marquee {
+		position: relative;
+		z-index: 2;
+		overflow: hidden;
+		border-block: 1px solid var(--color-line);
+		background: var(--color-deep);
+		padding-block: 0.9rem;
+		margin-bottom: 4.5rem;
+	}
+	.marquee-track {
+		display: flex;
+		width: max-content;
+		animation: marquee 60s linear infinite;
+	}
+	.marquee-track span {
+		flex: none;
+		padding-right: 0.5em;
+		font-family: var(--font-display);
+		font-size: clamp(1.6rem, 5vw, 2.6rem);
+		line-height: 1;
+		letter-spacing: 0.04em;
+		color: transparent;
+		-webkit-text-stroke: 1px color-mix(in srgb, var(--color-gold) 70%, transparent);
+		white-space: nowrap;
+	}
+	@keyframes marquee {
+		to {
+			transform: translateX(-50%);
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.marquee-track {
+			animation: none !important;
+		}
+		.marquee {
+			overflow-x: auto;
+		}
+	}
+
+	.intro {
+		margin-top: 1.25rem;
+		max-width: 36rem;
+		color: var(--color-mute);
+		font-size: 1.05rem;
+	}
+	.tap-hint {
+		margin-top: 1rem;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-family: var(--font-label);
+		font-weight: 600;
+		font-size: 0.8rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--color-gold);
+	}
+	@media (hover: hover) {
+		.tap-hint {
+			display: none;
+		}
+	}
+
+	/* Mobile : 2 colonnes CSS (les 3 listes s'effacent) */
+	.cols {
+		margin-top: 2.5rem;
+		column-count: 2;
+		column-gap: 10px;
+	}
+	.col {
+		display: contents;
+	}
+	.item {
+		position: relative;
+		break-inside: avoid;
+		margin-bottom: 10px;
+		overflow: hidden;
+		border-radius: 2px;
+		background: var(--color-panel);
+	}
+	figure {
+		position: relative;
+		margin: 0;
+		aspect-ratio: 3 / 4;
+	}
+	.tall figure {
+		aspect-ratio: 3 / 4.6;
+	}
+	.square figure {
+		aspect-ratio: 1;
+	}
+	figure :global(img) {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition:
+			transform 0.9s var(--ease-out-expo),
+			filter 0.4s;
+	}
+	.cap {
+		position: absolute;
+		inset: auto 0 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+		padding: 2.5rem 0.75rem 0.7rem;
+		background: linear-gradient(0deg, rgb(10 11 13 / 0.92), rgb(10 11 13 / 0.6) 55%, transparent);
+		opacity: 0;
+		transform: translateY(8px);
+		transition:
+			opacity 0.35s,
+			transform 0.45s var(--ease-out-expo);
+		pointer-events: none;
+	}
+	.cap-model {
+		font-family: var(--font-label);
+		font-weight: 700;
+		font-size: 1.05rem;
+		line-height: 1.1;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--color-paper);
+	}
+	.cap-work {
+		font-family: var(--font-label);
+		font-weight: 600;
+		font-size: 0.9rem;
+		line-height: 1.2;
+		letter-spacing: 0.04em;
+		color: var(--color-gold);
+	}
+	.item.is-open .cap,
+	.item:focus-within .cap {
+		opacity: 1;
+		transform: none;
+	}
+	@media (hover: hover) {
+		.item:hover .cap {
+			opacity: 1;
+			transform: none;
+		}
+		.item:hover :global(img) {
+			transform: scale(1.05);
+		}
+	}
+	.hit {
+		position: absolute;
+		inset: 0;
+		z-index: 2;
+		background: transparent;
+		cursor: pointer;
+	}
+	.hit:focus-visible {
+		outline: 2px solid var(--color-gold);
+		outline-offset: -2px;
+	}
+
+	/* Ordinateur : 3 colonnes à vitesses différentes */
+	@media (min-width: 768px) {
+		.cols {
+			column-count: initial;
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 18px;
+			margin-top: 4rem;
+			align-items: start;
+		}
+		.col {
+			display: flex;
+			flex-direction: column;
+			gap: 18px;
+			will-change: transform;
+		}
+		.col[data-mur-col="1"] {
+			margin-top: 5rem;
+		}
+		.item {
+			margin: 0;
+		}
+	}
+
+	/* Carte Facebook */
+	.fb {
+		margin-top: 3rem;
+		display: grid;
+		grid-template-columns: auto 1fr;
+		align-items: center;
+		gap: 1rem 1.25rem;
+		padding: 1.5rem;
+		border: 1px solid color-mix(in srgb, var(--color-gold) 45%, transparent);
+		background: radial-gradient(120% 120% at 100% 0%, rgb(214 168 74 / 0.14), transparent 60%), var(--color-deep);
+		transition: border-color 0.3s;
+		position: relative;
+		z-index: 2;
+	}
+	.fb:hover {
+		border-color: var(--color-gold);
+	}
+	.fb-icon {
+		display: grid;
+		place-items: center;
+		width: 3.25rem;
+		height: 3.25rem;
+		border-radius: 50%;
+		border: 1px solid var(--color-gold);
+		color: var(--color-gold);
+	}
+	.fb-body {
+		display: grid;
+		gap: 0.35rem;
+	}
+	.fb-title {
+		font-size: clamp(1.6rem, 6vw, 2.6rem);
+		line-height: 0.95;
+	}
+	.fb-text {
+		color: var(--color-mute);
+	}
+	.fb-cta {
+		grid-column: 1 / -1;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+	@media (min-width: 768px) {
+		.fb {
+			margin-top: 5rem;
+			grid-template-columns: auto 1fr auto;
+			padding: 2rem 2.25rem;
+		}
+		.fb-cta {
+			grid-column: auto;
+		}
+	}
+</style>

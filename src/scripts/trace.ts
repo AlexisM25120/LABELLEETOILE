@@ -71,7 +71,7 @@ export class Trace {
 		const laneR = W - laneL;
 
 		const start = this.hero.traceStart();
-		start.x = m.pair ? clamp(start.x, laneL, W - laneL) : laneL;
+		start.x = m.pair ? clamp(start.x, laneL, W - laneL) : clamp(start.x, laneL, W / 2);
 		const segs: Seg[] = [];
 		let cur: Pt = { ...start };
 		const dir = this.hero.exitDir;
@@ -146,20 +146,24 @@ export class Trace {
 			return maxY;
 		});
 
-		this.render(m);
+		this.render(m, this.hero.exitHalf);
 		this.update(window.scrollY);
 	}
 
-	private render(m: ReturnType<typeof traceMetrics>) {
+	/** `fromHalf` : écartement de départ (traces du hero), resserré sur ~1/2 écran */
+	private render(m: ReturnType<typeof traceMetrics>, fromHalf = 0) {
 		this.layer.replaceChildren();
 		this.chunks = [];
 		const S = this.samples;
 		if (S.length < 2) return;
 		const half = m.pair ? m.spacing / 2 : 0;
-		const pad = half + m.width + 30;
+		const pad = Math.max(half, fromHalf) + m.width + 30;
 		const tread = [m.width * 0.26, m.width * 0.17];
 		const period = tread[0] + tread[1];
-		const tracks = m.pair ? [half, -half] : [0];
+		const tracks = m.pair ? [1, -1] : [0];
+		const fan = window.innerHeight * 0.55;
+		const ease = (t: number) => t * t * (3 - 2 * t);
+		const halfAt = (len: number) => (fromHalf > half && len < fan ? fromHalf + (half - fromHalf) * ease(len / fan) : half);
 		const cum = tracks.map(() => 0); // longueur cumulée de chaque trace (continuité du motif)
 
 		// tranches d'environ 900 px de haut
@@ -211,14 +215,17 @@ export class Trace {
 
 			const g = svgEl("g", { mask: `url(#${id})` });
 			const tg = svgEl("g", { opacity: m.opacity, fill: "none", stroke: GOLD, "stroke-width": m.width, "stroke-linejoin": "round" });
-			tracks.forEach((off, ti) => {
-				const d = offsetPath(S, off, a, b);
+			tracks.forEach((sign, ti) => {
+				const offAt = (s: Sample) => sign * halfAt(s.len);
+				const d = offsetPath(S, offAt, a, b);
 				// longueur de ce morceau de trace décalée
 				let len = 0;
 				for (let i = a + 1; i <= b; i++) {
 					const p = S[i - 1];
 					const q = S[i];
-					len += Math.hypot(q.x + q.nx * off - (p.x + p.nx * off), q.y + q.ny * off - (p.y + p.ny * off));
+					const op = offAt(p);
+					const oq = offAt(q);
+					len += Math.hypot(q.x + q.nx * oq - (p.x + p.nx * op), q.y + q.ny * oq - (p.y + p.ny * op));
 				}
 				tg.append(svgEl("path", { d, "stroke-opacity": 0.32 }));
 				tg.append(svgEl("path", { d, "stroke-dasharray": `${tread[0].toFixed(2)} ${tread[1].toFixed(2)}`, "stroke-dashoffset": (cum[ti] % period).toFixed(2) }));
@@ -226,8 +233,8 @@ export class Trace {
 			});
 			g.append(tg);
 
-			// deux traces de dérapage plus marquées au démarrage
-			if (a === 0) {
+			// deux traces de dérapage plus marquées au démarrage (hero de secours : la vidéo a les siennes)
+			if (a === 0 && this.hero.mode !== "frames") {
 				// deux traces de gomme qui s'écartent sur les premiers mètres (la voiture a patiné)
 				const skidEnd = S.findIndex((s) => s.len > Math.min(m.pair ? 170 : 110, this.total * 0.3));
 				const n = Math.max(2, Math.min(skidEnd, b));
