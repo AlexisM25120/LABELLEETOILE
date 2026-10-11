@@ -1,55 +1,454 @@
 {
-	"_lisez-moi": "Photos Facebook publiées sur le site. Copiées depuis la bibliothèque par `npm run photos` (scripts/copier-photos.mjs). « flou » : zones de plaques à flouter, en fraction de l'image [x0, y0, x1, y1]. « recadrage » : zone gardée, même format. Les originaux de la bibliothèque ne sont jamais modifiés.",
+	"_lisez-moi": "Photos Facebook publiées sur le site. Copiées depuis la bibliothèque par `npm run photos` (scripts/copier-photos.mjs). « plaques » : contour de chaque plaque d'immatriculation à flouter, 4 coins [x, y] en pixels de la photo d'origine (haut gauche, haut droite, bas droite, bas gauche) ; seul l'intérieur du contour est flouté. « recadrage » : zone gardée, en fraction de l'image [x0, y0, x1, y1]. Les originaux de la bibliothèque ne sont jamais modifiés.",
 	"bibliotheque": "../02_Contenu-fourni-client/photos/facebook",
 	"destination": "assets/photos/facebook",
 	"photos": {
-		"bmw-estoril-01": { "flou": [[0.55, 0.545, 0.665, 0.585]] },
-		"bmw-estoril-02": { "flou": [[0.27, 0.545, 0.35, 0.58]] },
-		"bmw-estoril-04": { "flou": [[0.31, 0.145, 0.4, 0.195]] },
+		"bmw-estoril-01": {
+			"plaques": [
+				[
+					[
+						929,
+						1139
+					],
+					[
+						1012,
+						1139
+					],
+					[
+						1012,
+						1158
+					],
+					[
+						929,
+						1158
+					]
+				]
+			]
+		},
+		"bmw-estoril-02": {
+			"plaques": [
+				[
+					[
+						162,
+						942
+					],
+					[
+						215,
+						940
+					],
+					[
+						216,
+						954
+					],
+					[
+						163,
+						957
+					]
+				]
+			]
+		},
+		"bmw-estoril-04": {
+			"plaques": [
+				[
+					[
+						495,
+						338
+					],
+					[
+						600,
+						340
+					],
+					[
+						600,
+						380
+					],
+					[
+						495,
+						379
+					]
+				]
+			]
+		},
 		"bmw-estoril-09": {},
 		"bmw-estoril-23": {},
 		"bmw-estoril-29": {},
-		"toyota-land-cruiser-01": { "flou": [[0.0, 0.475, 0.21, 0.575]] },
-		"toyota-land-cruiser-02": { "flou": [[0.0, 0.515, 0.14, 0.615]] },
+		"toyota-land-cruiser-01": {
+			"plaques": [
+				[
+					[
+						7,
+						463
+					],
+					[
+						131,
+						509
+					],
+					[
+						141,
+						549
+					],
+					[
+						16,
+						505
+					]
+				]
+			]
+		},
+		"toyota-land-cruiser-02": {
+			"plaques": [
+				[
+					[
+						0,
+						502
+					],
+					[
+						86,
+						537
+					],
+					[
+						92,
+						579
+					],
+					[
+						0,
+						546
+					]
+				]
+			]
+		},
 		"toyota-land-cruiser-03": {},
 		"toyota-land-cruiser-04": {},
-		"ford-mustang-06": { "flou": [[0.16, 0.39, 0.235, 0.435], [0.19, 0.495, 0.29, 0.545]] },
+		"ford-mustang-06": {
+			"plaques": [
+				[
+					[
+						267,
+						833
+					],
+					[
+						336,
+						822
+					],
+					[
+						337,
+						844
+					],
+					[
+						269,
+						855
+					]
+				],
+				[
+					[
+						330,
+						1040
+					],
+					[
+						438,
+						1052
+					],
+					[
+						443,
+						1082
+					],
+					[
+						332,
+						1066
+					]
+				]
+			]
+		},
 		"ford-mustang-62": {},
 		"ford-mustang-08": {},
 		"ford-mustang-46": {},
 		"ford-mustang-14": {},
 		"ford-mustang-34": {},
-		"mercedes-sl-r107-01": { "flou": [[0.09, 0.46, 0.215, 0.515]] },
+		"mercedes-sl-r107-01": {
+			"plaques": [
+				[
+					[
+						160,
+						966
+					],
+					[
+						295,
+						990
+					],
+					[
+						304,
+						1027
+					],
+					[
+						166,
+						1003
+					]
+				]
+			]
+		},
 		"mercedes-sl-r107-43": {},
 		"mercedes-sl-r107-08": {},
 		"mercedes-sl-r107-25": {},
 		"mercedes-sl-r107-61": {},
-		"mercedes-sl-r107-02": { "flou": [[0.03, 0.535, 0.26, 0.635]] },
-		"audi-rs6-rouge-02": { "flou": [[0.555, 0.44, 0.78, 0.55]] },
+		"mercedes-sl-r107-02": {
+			"plaques": [
+				[
+					[
+						66,
+						1085
+					],
+					[
+						375,
+						1180
+					],
+					[
+						380,
+						1278
+					],
+					[
+						72,
+						1197
+					]
+				]
+			]
+		},
+		"audi-rs6-rouge-02": {
+			"plaques": [
+				[
+					[
+						434,
+						472
+					],
+					[
+						550,
+						415
+					],
+					[
+						557,
+						458
+					],
+					[
+						440,
+						517
+					]
+				]
+			]
+		},
 		"audi-rs6-rouge-13": {},
 		"audi-rs6-rouge-27": {},
 		"audi-rs6-rouge-10": {},
-		"audi-rs6-rouge-01": { "flou": [[0.6, 0.57, 0.77, 0.625]] },
-		"dodge-challenger-01": { "flou": [[0.44, 0.69, 0.56, 0.73]] },
+		"audi-rs6-rouge-01": {
+			"plaques": [
+				[
+					[
+						481,
+						569
+					],
+					[
+						547,
+						566
+					],
+					[
+						547,
+						582
+					],
+					[
+						481,
+						585
+					]
+				]
+			]
+		},
+		"dodge-challenger-01": {},
 		"dodge-challenger-06": {},
 		"dodge-challenger-15": {},
 		"dodge-challenger-04": {},
-		"ferrari-458-01": { "flou": [[0.09, 0.33, 0.22, 0.385], [0.09, 0.555, 0.18, 0.615]] },
-		"ferrari-458-03": { "flou": [[0.54, 0.595, 0.68, 0.645]] },
-		"ferrari-458-02": { "flou": [[0.4, 0.46, 0.67, 0.53]], "recadrage": [0.17, 0.0, 1.0, 1.0] },
+		"ferrari-458-01": {
+			"plaques": [
+				[
+					[
+						82,
+						339
+					],
+					[
+						143,
+						336
+					],
+					[
+						143,
+						354
+					],
+					[
+						83,
+						357
+					]
+				],
+				[
+					[
+						75,
+						549
+					],
+					[
+						111,
+						568
+					],
+					[
+						108,
+						579
+					],
+					[
+						72,
+						563
+					]
+				]
+			]
+		},
+		"ferrari-458-03": {
+			"plaques": [
+				[
+					[
+						401,
+						581
+					],
+					[
+						480,
+						579
+					],
+					[
+						480,
+						600
+					],
+					[
+						401,
+						602
+					]
+				]
+			]
+		},
+		"ferrari-458-02": {
+			"recadrage": [
+				0.17,
+				0.0,
+				1.0,
+				1.0
+			],
+			"plaques": [
+				[
+					[
+						300,
+						455
+					],
+					[
+						474,
+						452
+					],
+					[
+						474,
+						493
+					],
+					[
+						300,
+						499
+					]
+				]
+			]
+		},
 		"renault-clio-rouge-01": {},
 		"renault-clio-rouge-09": {},
 		"renault-clio-rouge-03": {},
-		"panamera-gts-01": { "flou": [[0.11, 0.553, 0.185, 0.588]] },
+		"panamera-gts-01": {
+			"plaques": [
+				[
+					[
+						186,
+						1154
+					],
+					[
+						224,
+						1140
+					],
+					[
+						229,
+						1164
+					],
+					[
+						191,
+						1187
+					]
+				]
+			]
+		},
 		"panamera-gts-09": {},
 		"panamera-gts-05": {},
-		"panamera-gts-03": { "flou": [[0.85, 0.085, 0.995, 0.135]] },
-		"bmw-e30-01": { "flou": [[0.645, 0.585, 0.81, 0.64]] },
+		"panamera-gts-03": {
+			"plaques": [
+				[
+					[
+						1303,
+						222
+					],
+					[
+						1463,
+						197
+					],
+					[
+						1462,
+						240
+					],
+					[
+						1312,
+						267
+					]
+				]
+			]
+		},
+		"bmw-e30-01": {
+			"plaques": [
+				[
+					[
+						1050,
+						1245
+					],
+					[
+						1243,
+						1195
+					],
+					[
+						1255,
+						1261
+					],
+					[
+						1056,
+						1297
+					]
+				]
+			]
+		},
 		"bmw-e30-06": {},
 		"bmw-e30-22": {},
 		"bmw-e30-35": {},
 		"bmw-e30-08": {},
-		"porsche-911-01": { "flou": [[0.09, 0.6, 0.175, 0.675]] },
+		"porsche-911-01": {
+			"plaques": [
+				[
+					[
+						192,
+						1258
+					],
+					[
+						210,
+						1261
+					],
+					[
+						260,
+						1362
+					],
+					[
+						229,
+						1367
+					]
+				]
+			]
+		},
 		"porsche-911-07": {},
 		"porsche-911-03": {},
 		"porsche-911-09": {},
@@ -69,12 +468,75 @@
 		"golf-gti-04": {},
 		"porsche-cayenne-07": {},
 		"porsche-macan-noir-03": {},
-		"porsche-macan-gris-01": { "flou": [[0.0, 0.43, 0.075, 0.485]] },
-		"lotus-exige-02": { "flou": [[0.0, 0.42, 0.1, 0.49]] },
+		"porsche-macan-gris-01": {
+			"plaques": [
+				[
+					[
+						0,
+						922
+					],
+					[
+						96,
+						920
+					],
+					[
+						97,
+						950
+					],
+					[
+						0,
+						954
+					]
+				]
+			]
+		},
+		"lotus-exige-02": {
+			"plaques": [
+				[
+					[
+						0,
+						866
+					],
+					[
+						107,
+						891
+					],
+					[
+						128,
+						991
+					],
+					[
+						0,
+						950
+					]
+				]
+			]
+		},
 		"mercedes-a45-amg-07": {},
 		"bmw-serie7-01": {},
 		"cupra-formentor-07": {},
-		"audi-rs3-02": { "flou": [[0.6, 0.57, 0.835, 0.66]] },
+		"audi-rs3-02": {
+			"plaques": [
+				[
+					[
+						1071,
+						1240
+					],
+					[
+						1290,
+						1152
+					],
+					[
+						1296,
+						1218
+					],
+					[
+						1077,
+						1309
+					]
+				]
+			]
+		},
 		"dodge-ram-01": {},
 		"toyota-hilux-24": {},
 		"mercedes-classe-c-09": {},
@@ -84,7 +546,28 @@
 		"audi-a1-jaune-02": {},
 		"audi-a6-allroad-04": {},
 		"renault-espace-02": {},
-		"utilitaire-blanc-06": { "flou": [[0.195, 0.475, 0.31, 0.55]] },
+		"utilitaire-blanc-06": {
+			"plaques": [
+				[
+					[
+						152,
+						470
+					],
+					[
+						210,
+						485
+					],
+					[
+						211,
+						514
+					],
+					[
+						154,
+						502
+					]
+				]
+			]
+		},
 		"bmw-serie3-noire-09": {},
 		"audi-s3-bleue-02": {},
 		"debosselage-sans-peinture-01": {},

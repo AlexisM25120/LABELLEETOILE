@@ -71,12 +71,12 @@ Pour découper une **nouvelle** vidéo (dossiers vides) : `npm run frames -- por
 Les photos viennent de la bibliothèque Facebook (`../02_Contenu-fourni-client/photos/facebook/`, à ne jamais copier en entier ni modifier). Le site n'en reçoit qu'une sélection, plaques floutées.
 
 1. **Choisir** les photos sur la planche du projet (`_planches/<projet>.jpg`), puis les ouvrir en grand : netteté, cadrage, plaques, visages.
-2. **Les déclarer** dans `scripts/photos-facebook.json`, sous leur nom d'origine sans extension. Pour une plaque, ajouter la zone à flouter en fraction de l'image (`[x0, y0, x1, y1]`) :
+2. **Les déclarer** dans `scripts/photos-facebook.json`, sous leur nom d'origine sans extension. Pour chaque plaque lisible (y compris celles des voitures garées à côté), relever ses 4 coins en pixels de la photo d'origine, dans l'ordre haut gauche, haut droite, bas droite, bas gauche :
    ```json
    "golf-gti-04": {},
-   "audi-rs3-02": { "flou": [[0.6, 0.57, 0.835, 0.66]] }
+   "audi-rs3-02": { "plaques": [[[1071, 1240], [1290, 1152], [1296, 1218], [1077, 1309]]] }
    ```
-   `"recadrage": [x0, y0, x1, y1]` garde seulement une partie de la photo.
+   Seul l'intérieur du contour est flouté : la plaque garde sa couleur, les caractères disparaissent, la carrosserie autour ne bouge pas. `"recadrage": [x0, y0, x1, y1]` (en fraction de l'image) garde seulement une partie de la photo.
 3. **Copier** : `npm run photos`. Le script copie les fichiers dans `assets/photos/facebook/` (`<projet>-NN.jpg`), floute les copies et retire celles qui ne sont plus dans la liste. Les originaux restent intacts.
 4. **Décrire le projet** dans `realisations.projects` (`src/content/site.ts`) :
    ```ts

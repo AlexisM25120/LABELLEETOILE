@@ -2,7 +2,7 @@
 
 Bibliothèque d'origine : `../02_Contenu-fourni-client/photos/facebook/` (872 photos, 53 projets, récupérées le 10/10/2026). Elle n'est ni copiée en entier, ni modifiée.
 
-**89 photos publiées, 41 projets** (13 en galerie, 24 au mur, le reste pour les prestations, les étapes et l'atelier). Copiées dans `assets/photos/facebook/` sous leur nom d'origine par `npm run photos` (liste : `scripts/photos-facebook.json`). **22 photos ont leur plaque floutée** (sur la copie seulement).
+**89 photos publiées, 41 projets** (13 en galerie, 24 au mur, le reste pour les prestations, les étapes et l'atelier). Copiées dans `assets/photos/facebook/` sous leur nom d'origine par `npm run photos` (liste : `scripts/photos-facebook.json`). **21 photos ont leur plaque floutée** (sur la copie seulement).
 
 Méthode : planches contact de tous les projets, puis chaque photo publiée ouverte en grand (netteté, cadrage, plaques, visages). Écartés : flou, doublons, bazar au premier plan, personnes reconnaissables.
 
@@ -152,9 +152,9 @@ L'ordre proposé est suivi, avec deux changements :
 
 ## Photos floutées (plaques d'immatriculation)
 
-Flou fort et irréversible (pixellisation puis flou gaussien, bords fondus), fait par `scripts/copier-photos.mjs` sur les copies de `assets/photos/facebook/`. Zones dans `scripts/photos-facebook.json`.
+Sébastien n'a masqué les plaques lui-même que sur quelques photos de la Panamera GTS : sur toutes les autres, elles sont lisibles sur Facebook. Elles sont donc floutées ici, **sur la plaque seulement** : contour exact relevé coin par coin sur l'original (`scripts/photos-facebook.json`, clé `plaques`), flou gaussien fort calculé avec les seuls pixels de la plaque (la carrosserie autour ne bouge pas, la plaque garde sa couleur), bord adouci sur 1 px. Fait par `scripts/copier-photos.mjs` sur les copies de `assets/photos/facebook/`.
 
-| Fichier | Zones floutées |
+| Fichier | Plaques floutées |
 | --- | --- |
 | `bmw-estoril-01.jpg` | 1 |
 | `bmw-estoril-02.jpg` | 1 |
@@ -166,7 +166,6 @@ Flou fort et irréversible (pixellisation puis flou gaussien, bords fondus), fai
 | `mercedes-sl-r107-02.jpg` | 1 |
 | `audi-rs6-rouge-02.jpg` | 1 |
 | `audi-rs6-rouge-01.jpg` | 1 |
-| `dodge-challenger-01.jpg` | 1 |
 | `ferrari-458-01.jpg` | 2 |
 | `ferrari-458-03.jpg` | 1 |
 | `ferrari-458-02.jpg` | 1 |
@@ -181,7 +180,7 @@ Flou fort et irréversible (pixellisation puis flou gaussien, bords fondus), fai
 
 Recadrées : `ferrari-458-02.jpg` (personne en bord de cadre).
 
-Vérification : chaque photo publiée a été agrandie à l'endroit des plaques visibles. Plaques déjà masquées par Sébastien : Panamera GTS (la plaque de la 03 et celle d'une voiture voisine sur la 01 sont floutées en plus). Aucun visage reconnaissable dans la sélection.
+Vérification : chaque photo publiée a été agrandie à l'endroit des plaques visibles, y compris celles des voitures garées à côté (berline noire sur `bmw-estoril-02`, voiture voisine sur `panamera-gts-01`). Aucun visage reconnaissable dans la sélection.
 
 ## Projets écartés
 

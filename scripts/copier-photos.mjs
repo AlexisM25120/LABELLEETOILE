@@ -1,5 +1,5 @@
 // Copie les photos Facebook retenues (scripts/photos-facebook.json) de la bibliothèque
-// vers assets/photos/facebook/, en floutant les plaques d'immatriculation.
+// vers assets/photos/facebook/, en floutant les plaques d'immatriculation (contour exact de chaque plaque).
 // Usage : npm run photos
 // Les originaux de la bibliothèque ne sont jamais modifiés : seules les copies sont floutées.
 import fs from "node:fs";
@@ -21,25 +21,51 @@ for (const f of fs.readdirSync(dest)) {
 	}
 }
 
-/** Flou fort et irréversible (pixellisation puis flou gaussien), bords fondus pour rester discret */
-async function blurZone(img, W, H, [x0, y0, x1, y1]) {
-	const zw = (x1 - x0) * W;
-	const zh = (y1 - y0) * H;
-	const feather = Math.max(6, Math.min(zw, zh) * 0.22);
-	const left = Math.max(0, Math.floor(x0 * W - feather));
-	const top = Math.max(0, Math.floor(y0 * H - feather));
-	const width = Math.min(W - left, Math.ceil(zw + 2 * feather));
-	const height = Math.min(H - top, Math.ceil(zh + 2 * feather));
-	const zone = await sharp(img).extract({ left, top, width, height }).toBuffer();
-	const tiny = await sharp(zone).resize(Math.max(2, Math.round(width / 18)), Math.max(2, Math.round(height / 18))).toBuffer();
-	const blurred = await sharp(tiny).resize(width, height, { kernel: "cubic" }).blur(Math.max(4, Math.min(width, height) / 5)).toBuffer();
-	// masque : plein sur la zone de la plaque (plus une marge), fondu sur la bordure
-	const f = feather;
-	const mask = Buffer.from(
-		`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><defs><filter id="b" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${(f / 3).toFixed(1)}"/></filter></defs><rect x="${(f * 0.45).toFixed(1)}" y="${(f * 0.45).toFixed(1)}" width="${(width - f * 0.9).toFixed(1)}" height="${(height - f * 0.9).toFixed(1)}" rx="${(f * 0.6).toFixed(1)}" fill="#fff" filter="url(#b)"/></svg>`,
+const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+
+/**
+ * Floute une plaque, et seulement elle : flou gaussien fort calculé avec les seuls pixels de la plaque
+ * (convolution normalisée, la carrosserie autour ne déteint pas), posé dans le contour exact.
+ * La plaque garde sa couleur (blanche ou noire, bandes bleues), les caractères disparaissent.
+ */
+async function blurPlate(img, W, H, quad) {
+	const plateH = (dist(quad[0], quad[3]) + dist(quad[1], quad[2])) / 2;
+	const sigma = Math.max(3, plateH * 0.3);
+	const pad = Math.ceil(sigma * 2.5) + 2;
+	const xs = quad.map((p) => p[0]);
+	const ys = quad.map((p) => p[1]);
+	const left = Math.max(0, Math.floor(Math.min(...xs)) - pad);
+	const top = Math.max(0, Math.floor(Math.min(...ys)) - pad);
+	const width = Math.min(W, Math.ceil(Math.max(...xs)) + pad) - left;
+	const height = Math.min(H, Math.ceil(Math.max(...ys)) + pad) - top;
+	const pts = quad.map(([x, y]) => `${(x - left).toFixed(1)},${(y - top).toFixed(1)}`).join(" ");
+	const svg = (body) => Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">${body}</svg>`);
+	const alphaOf = async (body) => sharp(svg(body)).ensureAlpha().extractChannel(3).raw().toBuffer();
+	// masque de la plaque (sert au calcul du flou) et masque de pose (1 px de plus, bord adouci)
+	const inside = await alphaOf(`<polygon points="${pts}" fill="#fff"/>`);
+	const paste = await alphaOf(
+		`<defs><filter id="f" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="0.6"/></filter></defs><polygon points="${pts}" fill="#fff" stroke="#fff" stroke-width="2" stroke-linejoin="round" filter="url(#f)"/>`,
 	);
-	const alpha = await sharp(mask).resize(width, height).extractChannel(3).toBuffer();
-	const input = await sharp(blurred).removeAlpha().joinChannel(alpha).png().toBuffer();
+	const region = await sharp(img).extract({ left, top, width, height }).removeAlpha().raw().toBuffer();
+	const n = width * height;
+	const premult = Buffer.alloc(n * 3);
+	for (let i = 0; i < n; i++) {
+		const m = inside[i] / 255;
+		for (let c = 0; c < 3; c++) premult[i * 3 + c] = Math.round(region[i * 3 + c] * m);
+	}
+	const raw = (_buf, channels) => ({ raw: { width, height, channels } });
+	const blurredImg = await sharp(premult, raw(premult, 3)).blur(sigma).raw().toBuffer();
+	// (sharp renvoie un masque d'une couche sur 3 canaux : on lit le premier)
+	const blurredMask = await sharp(inside, raw(inside, 1)).blur(sigma).extractChannel(0).raw().toBuffer();
+	const out = Buffer.alloc(n * 4);
+	for (let i = 0; i < n; i++) {
+		const m = Math.max(blurredMask[i], 1) / 255;
+		// léger grain pour que la zone floutée ne soit pas plus lisse que la photo
+		const grain = (Math.random() - 0.5) * 5;
+		for (let c = 0; c < 3; c++) out[i * 4 + c] = Math.max(0, Math.min(255, Math.round(blurredImg[i * 3 + c] / m + grain)));
+		out[i * 4 + 3] = paste[i];
+	}
+	const input = await sharp(out, raw(out, 4)).png().toBuffer();
 	return { input, left, top };
 }
 
@@ -52,7 +78,7 @@ for (const [name, opts] of Object.entries(config.photos)) {
 		console.warn("introuvable dans la bibliothèque :", name);
 		continue;
 	}
-	const zones = opts.flou ?? [];
+	const zones = opts.plaques ?? [];
 	if (!zones.length && !opts.recadrage) {
 		fs.copyFileSync(src, out);
 		count++;
@@ -62,7 +88,7 @@ for (const [name, opts] of Object.entries(config.photos)) {
 	let { width: W, height: H } = await sharp(buf).metadata();
 	if (zones.length) {
 		const layers = [];
-		for (const z of zones) layers.push(await blurZone(buf, W, H, z));
+		for (const z of zones) layers.push(await blurPlate(buf, W, H, z));
 		buf = await sharp(buf).composite(layers).toBuffer();
 		blurredCount++;
 	}
