@@ -476,9 +476,6 @@ export const prestations = {
 export const pourquoi = {
 	label: "Pourquoi la Belle Étoile",
 	title: "Le travail bien fait, sans détour",
-	// Photo d'une réalisation (fichier de realisations.projects) : voiture sur le pont, en préparation
-	photo: "ford-mustang-08",
-	photoFocus: "55% 55%",
 	items: [
 		{ title: "Une finition qu'on ne voit pas", text: "Teinte refaite en cabine, raccords invisibles. Votre voiture ressort comme si rien ne s'était passé." },
 		{ title: "De la Clio à la Panamera", text: "Même exigence quelle que soit la voiture. Une citadine mérite le même soin qu'une sportive." },

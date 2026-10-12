@@ -1,10 +1,7 @@
 ---
-import Photo from "./Photo.astro";
 import { pourquoi as W } from "../content/site";
-import { photoByFile } from "../lib/realisations";
 import { fr } from "../lib/typo";
 
-const pic = photoByFile(W.photo);
 const n = (i: number) => String(i + 1).padStart(2, "0");
 const [a, b, c, d] = W.items;
 ---
@@ -32,11 +29,8 @@ const [a, b, c, d] = W.items;
 			</li>
 
 			<li class="item i3" data-fade>
-				<figure class="pic">
-					<Photo src={pic.img} alt={fr(pic.alt)} sizes="(max-width: 767px) 92vw, 46vw" widths={[480, 720, 960]} position={W.photoFocus} />
-				</figure>
+				<span class="num outline-text display" aria-hidden="true">{n(2)}</span>
 				<div class="body">
-					<span class="num outline-text display" aria-hidden="true">{n(2)}</span>
 					<h3 class="title display">{fr(c.title)}</h3>
 					<p class="text">{fr(c.text)}</p>
 				</div>
@@ -98,27 +92,6 @@ const [a, b, c, d] = W.items;
 		font-size: 1.05rem;
 		line-height: 1.55;
 	}
-	.pic {
-		position: relative;
-		overflow: hidden;
-		aspect-ratio: 4 / 3;
-		border-radius: 2px;
-	}
-	.pic :global(img) {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-	}
-	.pic::after {
-		content: "";
-		position: absolute;
-		inset: auto 0 0;
-		height: 40%;
-		background: linear-gradient(0deg, rgb(12 13 15 / 0.6), transparent);
-	}
-	.i3 .body {
-		margin-top: 1.75rem;
-	}
 	.i4 {
 		padding-top: 2.5rem;
 		border-top: 1px solid var(--color-line);
@@ -152,18 +125,12 @@ const [a, b, c, d] = W.items;
 			grid-row: 1;
 			padding-bottom: 0.6rem;
 		}
-		.i3 {
-			align-items: center;
-		}
-		.i3 .pic {
-			grid-column: 1 / span 7;
+		.i3 .num {
+			grid-column: 3 / span 4;
 		}
 		.i3 .body {
-			grid-column: 8 / span 5;
-			margin-top: 0;
-		}
-		.i3 .num {
-			font-size: clamp(5rem, 10vw, 9rem);
+			grid-column: 7 / span 6;
+			padding-bottom: 0.6rem;
 		}
 		.i4 .body {
 			grid-column: 3 / span 10;
