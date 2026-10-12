@@ -58,8 +58,9 @@ export function initGallery(lenis: Lenis | undefined) {
 	const setBar = (p: number) => (bar.style.transform = `scaleX(${0.08 + 0.92 * clamp(p, 0, 1)})`);
 	const mm = gsap.matchMedia();
 
-	// Tablette et ordinateur : section épinglée (CSS sticky), la bande défile de droite à gauche
-	mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
+	// Section épinglée (CSS sticky), la bande défile de droite à gauche au scroll, mobile compris
+	const pin = sec.querySelector<HTMLElement>("[data-gal-pin]")!;
+	mm.add("(prefers-reduced-motion: no-preference)", () => {
 		const dist = () => {
 			const last = track.lastElementChild as HTMLElement;
 			const pad = parseFloat(getComputedStyle(track).paddingRight) || 0;
@@ -67,8 +68,9 @@ export function initGallery(lenis: Lenis | undefined) {
 		};
 		// la bande avance un peu plus vite que le défilement (galerie moins longue à parcourir)
 		const SPEED = 0.8;
+		// hauteur de l'écran épinglé (100svh) : stable quand la barre d'adresse iOS bouge
 		const setHeight = () => {
-			sec.style.height = `${dist() * SPEED + window.innerHeight}px`;
+			sec.style.height = `${dist() * SPEED + (pin.offsetHeight || window.innerHeight)}px`;
 		};
 		setHeight();
 		ScrollTrigger.addEventListener("refreshInit", setHeight);
@@ -103,8 +105,8 @@ export function initGallery(lenis: Lenis | undefined) {
 		};
 	});
 
-	// Mobile : carrousel natif au doigt avec accroche
-	mm.add("(max-width: 767px), (prefers-reduced-motion: reduce)", () => {
+	// Animations réduites : carrousel natif au doigt avec accroche
+	mm.add("(prefers-reduced-motion: reduce)", () => {
 		const onScroll = () => setBar(track.scrollLeft / Math.max(1, track.scrollWidth - track.clientWidth));
 		track.addEventListener("scroll", onScroll, { passive: true });
 		onScroll();
@@ -155,6 +157,27 @@ export function initMur(reduced: boolean) {
 	);
 	if (reduced) return;
 	const mm = gsap.matchMedia();
+	// Mobile : 2 colonnes CSS ; chaque photo suit la vitesse de sa colonne (gauche / droite)
+	mm.add("(max-width: 767px)", () => {
+		const lis = [...mur.querySelectorAll<HTMLElement>("li.item")];
+		const shift = (li: HTMLElement) => {
+			const box = mur.getBoundingClientRect();
+			const r = li.getBoundingClientRect();
+			return r.left + r.width / 2 - box.left > box.width / 2 ? 60 : 22;
+		};
+		const tweens = lis.map((li) =>
+			gsap.fromTo(
+				li,
+				{ y: () => shift(li) },
+				{
+					y: () => -shift(li),
+					ease: "none",
+					scrollTrigger: { trigger: mur, start: "top bottom", end: "bottom top", scrub: true, invalidateOnRefresh: true },
+				},
+			),
+		);
+		return () => tweens.forEach((t) => (t.scrollTrigger?.kill(), t.kill()));
+	});
 	mm.add("(min-width: 768px)", () => {
 		const speeds = [70, -50, 130];
 		const tweens = [...mur.querySelectorAll<HTMLElement>("[data-mur-col]")].map((col, i) =>
