@@ -69,6 +69,12 @@ import { loader } from "../content/site";
 		border-radius: 2px;
 		cursor: pointer;
 	}
+	/* Sous 1024 px, la barre Appeler / Itinéraire (10 px + 48 px + marge basse) passe devant : le bouton se place au-dessus */
+	@media (max-width: 1023.98px) {
+		.loader-skip {
+			bottom: calc(70px + max(10px, env(safe-area-inset-bottom)));
+		}
+	}
 	.loader-skip:hover {
 		color: var(--color-gold);
 		border-color: var(--color-gold);

@@ -18,7 +18,6 @@ const reduced = reducedMotion();
 const heroEl = document.querySelector<HTMLElement>("[data-hero]")!;
 const loaderEl = document.querySelector<HTMLElement>("[data-loader]");
 const header = document.querySelector<HTMLElement>("[data-header]");
-const mobileBar = document.querySelector<HTMLElement>("[data-mobile-bar]");
 const playLoader = Boolean(loaderEl && !html.classList.contains("intro-seen"));
 
 if (playLoader) {
@@ -133,7 +132,6 @@ async function start() {
 	hero.introReveal();
 	html.classList.remove("is-loading");
 	lenis?.start();
-	mobileBar?.classList.add("is-on");
 	hero.loadRest();
 	ScrollTrigger.refresh();
 	trace?.build();
