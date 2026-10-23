@@ -13,3 +13,6 @@ dist/
 # images de travail des vidéos (seules les images WebP extraites sont versionnées)
 *.mp4
 *.mov
+
+# compteurs de test de la mesure
+mesure/tests/.tmp/

@@ -38,7 +38,7 @@ const href = (h: string) => (home ? h : `/${h}`);
 				<div>
 					<p class="label">{F.contactTitle}</p>
 					<ul>
-						<li><a href={contact.phoneHref}>{fr(contact.phone)}</a></li>
+						<li><a href={contact.phoneHref} data-m="appel">{fr(contact.phone)}</a></li>
 						<li><a href={`mailto:${contact.email}`} class="break-all">{contact.email}</a></li>
 						<li>{contact.street}, {contact.postalCode} {contact.city}</li>
 					</ul>

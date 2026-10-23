@@ -8,11 +8,14 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "build:prod": "PUBLIC_SITE_MODE=prod astro build && node mesure/copier.mjs && node scripts/verifier-mesure.mjs prod",
     "preview": "astro preview",
     "astro": "astro",
     "logos": "node scripts/build-logos.mjs",
     "frames": "sh scripts/extract-frames.sh",
-    "photos": "node scripts/copier-photos.mjs"
+    "photos": "node scripts/copier-photos.mjs",
+    "mesure:verifier": "node scripts/verifier-mesure.mjs maquette",
+    "mesure:php": "node mesure/tests/php-check.mjs"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.3.0",

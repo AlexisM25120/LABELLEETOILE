@@ -108,11 +108,19 @@ export const SHOW_CALLBACK = true;
 
 Le formulaire (nom + téléphone) s'affiche dans la section « Passez nous voir. ». Mode démo : rien n'est envoyé. Pour la mise en ligne, le brancher sur Web3Forms (voir `05_STACK-TECHNIQUE/Config-Web3Forms`).
 
-## Mesure d'audience (Umami)
+## Mesure des visites (mesure maison)
 
-Umami, sans cookies (pas de bandeau de consentement). Le script n'est chargé que si la variable d'environnement `PUBLIC_UMAMI_WEBSITE_ID` est renseignée (réglages du site sur Netlify ou Vercel) ; `PUBLIC_UMAMI_SRC` change l'adresse du script (défaut : `https://cloud.umami.is/script.js`).
+Module `mesure/` repris tel quel de Renovision (voir `mesure/README.md`) : compteurs anonymes, sans cookie, sans service tiers, un total par événement et par mois sur l'hébergement, et un e-mail de récapitulatif le 1er du mois. **Actif seulement en prod sur Hostinger** (`npm run build:prod`) : sur Netlify (maquette, préversions), ni script ni envoi.
 
-Événements envoyés au clic (`src/scripts/mesure.ts`) : `appel` (liens `tel:`), `itineraire` (lien Google Maps), `whatsapp` (liens wa.me, aucun pour l'instant), `rdv` (liens marqués `data-rdv`, aucun pour l'instant), `devis` (envoi du formulaire « Être rappelé »).
+| Événement | Déclencheur | Marquage |
+| --- | --- | --- |
+| `visite` | ouverture d'une page | automatique |
+| `appel` | clic sur un lien `tel:` (12 liens : en-tête, hero, barre mobile, prestations, visionneuse, contact, pied de page) | `data-m="appel"` |
+| `itineraire` | clic sur « Itinéraire » (hero, barre mobile, contact) | `data-m="itineraire"` |
+
+Pas de `whatsapp` ni de `rdv` (rien de tel sur le site). `devis` s'ajoutera aux réglages quand le bloc « Être rappelé » enverra vraiment (voir `initCallback`, `src/scripts/sections.ts`). Réglages propres au site : `serveur/mesure-reglages.php`. Mise en ligne pas à pas chez Hostinger : `docs/MESURE.md`.
+
+Vérifier : `npm run build && npm run mesure:verifier` (maquette : rien n'est compté) ; `npm run build:prod` (contrôle intégré). Bancs PHP : `MESURE_PHP="npx -y @php-wasm/cli@3.1.56" npm run mesure:php`.
 
 ## Déployer une préversion
 
@@ -129,6 +137,7 @@ L'URL de la préversion est utilisée automatiquement pour les balises de partag
 1. Retirer `<meta name="robots" content="noindex, nofollow">` dans `src/layouts/Layout.astro`, la règle `X-Robots-Tag` dans `public/_headers` et `vercel.json`, et le bandeau `MaquetteBanner` dans `src/layouts/Layout.astro`.
 2. Renseigner `SITE_URL` (domaine définitif) et compléter les mentions légales.
 3. Traiter chaque point de `A-VALIDER.md`.
+4. Construire avec `npm run build:prod` et suivre `docs/MESURE.md` pour activer la mesure sur Hostinger.
 
 ## Logos
 

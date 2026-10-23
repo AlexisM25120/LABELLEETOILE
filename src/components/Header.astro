@@ -19,11 +19,11 @@ import { fr } from "../lib/typo";
 				))
 			}
 		</nav>
-		<a href={contact.phoneHref} class="btn btn-gold hidden min-h-11 rounded-full px-5 py-2.5 text-[0.95rem] md:inline-flex">
+		<a href={contact.phoneHref} data-m="appel" class="btn btn-gold hidden min-h-11 rounded-full px-5 py-2.5 text-[0.95rem] md:inline-flex">
 			<Icon name="phone" />
 			{fr(contact.phone)}
 		</a>
-		<a href={contact.phoneHref} class="call-round md:hidden" aria-label={fr(actions.callLong)}>
+		<a href={contact.phoneHref} data-m="appel" class="call-round md:hidden" aria-label={fr(actions.callLong)}>
 			<Icon name="phone" class="size-5" />
 		</a>
 	</div>

@@ -2,7 +2,6 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type Lenis from "lenis";
-import { trackForm } from "./mesure";
 import { clamp, debounce } from "./util";
 
 const fmt = (v: number, dec: number) => v.toFixed(dec).replace(".", ",");
@@ -253,8 +252,8 @@ export function initCallback() {
 			form.reportValidity();
 			return;
 		}
-		// Maquette : aucun envoi réel
-		trackForm();
+		// Maquette : aucun envoi réel. Une fois branché sur Web3Forms, après l'envoi réussi :
+		// form.dispatchEvent(new Event("mesure:envoi", { bubbles: true })) + data-m-envoi="devis" (mesure/README.md)
 		form.querySelector<HTMLElement>("[data-callback-ok]")!.hidden = false;
 		form.reset();
 	});
