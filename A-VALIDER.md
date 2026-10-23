@@ -77,6 +77,9 @@ Toutes les photos viennent de la page Facebook. Les dates affichées sont **les 
 - Texte de la zone et JSON-LD : « Charquemont, Maîche et le Haut-Doubs », validé le 23/10/2026.
 - La carte reprend la même zone (Charquemont, Maîche, « Haut-Doubs » en fond). Elle est stylisée et les positions sont approximatives.
 
+### Confidentialité
+- Paragraphe « Cookies et mesure d'audience » (mesure maison, 24/10/2026) : ce qui est compté, en prod sur Hostinger seulement (`docs/MESURE.md`).
+
 ### Petits textes d'interface
 - « Vous ne restez pas sans voiture », « Vous êtes arrivé. », « Sébastien vous rappelle dès qu'il sort de la cabine » (bloc « Être rappelé », désactivé).
 

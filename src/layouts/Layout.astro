@@ -9,6 +9,7 @@ import interUrl from "@fontsource-variable/inter/files/inter-latin-wght-normal.w
 import barlow600Url from "@fontsource/barlow-condensed/files/barlow-condensed-latin-600-normal.woff2?url";
 import barlow700Url from "@fontsource/barlow-condensed/files/barlow-condensed-latin-700-normal.woff2?url";
 import MaquetteBanner from "../components/MaquetteBanner.astro";
+import Mesure from "../../mesure/client/Mesure.astro";
 import { contact, meta } from "../content/site";
 
 interface Props {
@@ -22,9 +23,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
 
 const ogUrl = new URL("/og.jpg", Astro.site).href;
 
-// Mesure d'audience Umami (sans cookies) : chargée seulement si l'identifiant du site est renseigné
-const umamiId = import.meta.env.PUBLIC_UMAMI_WEBSITE_ID;
-const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC || "https://cloud.umami.is/script.js";
+// Mesure des visites (mesure/README.md, docs/MESURE.md) : en prod seulement, sur Hostinger
+// (npm run build:prod). Maquette et préversions Netlify : ni script ni envoi.
+const isProd = import.meta.env.PUBLIC_SITE_MODE === "prod";
 
 const jsonLd = {
 	"@context": "https://schema.org",
@@ -111,7 +112,7 @@ const jsonLd = {
 			})();
 		</script>
 		{home && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
-		{umamiId && <script is:inline defer src={umamiSrc} data-website-id={umamiId} />}
+		{isProd && <Mesure />}
 	</head>
 	<body>
 		<a class="skip-link" href="#contenu">Aller au contenu</a>

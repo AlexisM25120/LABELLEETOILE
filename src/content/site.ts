@@ -667,7 +667,15 @@ export const legal = {
 				title: "Données collectées",
 				lines: [
 					"Ce site ne contient aucun formulaire de devis et ne collecte aucune donnée personnelle.",
-					"Il ne dépose pas de cookie publicitaire et n'utilise pas d'outil de mesure d'audience.",
+				],
+			},
+			{
+				// Mesure maison (mesure/README.md, docs/MESURE.md) [À VALIDER] avec Sébastien
+				title: "Cookies et mesure d'audience",
+				lines: [
+					"Ce site n'utilise aucun cookie. Pour savoir combien de personnes le consultent et nous contactent, il compte les pages ouvertes et les clics sur « Appeler » et « Itinéraire ».",
+					"Ces compteurs sont anonymes : ni votre adresse IP, ni votre navigateur, ni aucun identifiant ne sont enregistrés. Ils sont conservés sur notre hébergement et ne sont transmis à aucun tiers.",
+					"Pour ne pas être compté, activez l'option « Ne pas suivre » (Do Not Track ou Global Privacy Control) de votre navigateur : le site n'envoie alors rien.",
 				],
 			},
 			{

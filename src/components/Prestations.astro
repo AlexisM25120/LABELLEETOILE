@@ -30,7 +30,7 @@ import { fr } from "../lib/typo";
 							{it.tag && <span class="tag">{it.tag}</span>}
 						</h3>
 						<p class="text">{fr(it.text)}</p>
-						<a href={contact.phoneHref} class="cta">
+						<a href={contact.phoneHref} data-m="appel" class="cta">
 							<Icon name="phone" class="size-4" />
 							{fr(actions.estimate)}
 						</a>

@@ -14,13 +14,13 @@ import { fr } from "../lib/typo";
 		<div class="grid-f">
 			<div class="col-call">
 				<p class="label">{F.phoneLabel}</p>
-				<a href={contact.phoneHref} class="phone display" aria-label={fr(actions.callLong)}>{fr(contact.phone)}</a>
+				<a href={contact.phoneHref} data-m="appel" class="phone display" aria-label={fr(actions.callLong)}>{fr(contact.phone)}</a>
 				<div class="actions">
-					<a href={contact.phoneHref} class="btn btn-gold">
+					<a href={contact.phoneHref} data-m="appel" class="btn btn-gold">
 						<Icon name="phone" />
 						{actions.call}
 					</a>
-					<a href={contact.directionsUrl} class="btn btn-line" target="_blank" rel="noopener">
+					<a href={contact.directionsUrl} data-m="itineraire" class="btn btn-line" target="_blank" rel="noopener">
 						<Icon name="route" />
 						{actions.directions}
 					</a>

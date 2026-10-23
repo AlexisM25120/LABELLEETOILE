@@ -124,11 +124,11 @@ const framesVars =
 					</h1>
 					<p class="hero-sub" data-reveal>{fr(hero.sub)}</p>
 					<div class="hero-cta" data-reveal>
-						<a href={contact.phoneHref} class="btn btn-gold">
+						<a href={contact.phoneHref} data-m="appel" class="btn btn-gold">
 							<Icon name="phone" />
 							{fr(actions.callLong)}
 						</a>
-						<a href={contact.directionsUrl} class="btn btn-line" target="_blank" rel="noopener">
+						<a href={contact.directionsUrl} data-m="itineraire" class="btn btn-line" target="_blank" rel="noopener">
 							<Icon name="route" />
 							{actions.directions}
 						</a>

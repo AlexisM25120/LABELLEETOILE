@@ -7,7 +7,6 @@ import { runLoader } from "./loader";
 import { Trace } from "./trace";
 import { initAnchors, initCallback, initCounters, initFades, initFaq, initGallery, initMur, initPairs } from "./sections";
 import { initViewer } from "./viewer";
-import { initMesure } from "./mesure";
 import { debounce, reducedMotion, storage, yieldToMain } from "./util";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -87,9 +86,6 @@ hero.onProgress = (p1, p2) => {
 	header.classList.toggle("logo-off", !past && !reduced);
 };
 hero.render();
-
-// --- Mesure d'audience (Umami, sans cookies) : clics sur les actions
-initMesure();
 
 // --- Sections : après une pause, pour que le hero s'affiche sans attendre (tâche longue coupée en deux)
 const sectionsReady = yieldToMain().then(() => {
