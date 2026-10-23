@@ -6,6 +6,8 @@ import "@fontsource/barlow-condensed/700.css";
 import "../styles/global.css";
 import antonUrl from "@fontsource/anton/files/anton-latin-400-normal.woff2?url";
 import interUrl from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
+import barlow600Url from "@fontsource/barlow-condensed/files/barlow-condensed-latin-600-normal.woff2?url";
+import barlow700Url from "@fontsource/barlow-condensed/files/barlow-condensed-latin-700-normal.woff2?url";
 import MaquetteBanner from "../components/MaquetteBanner.astro";
 import { contact, meta, final } from "../content/site";
 
@@ -19,6 +21,10 @@ const { title = meta.title, description = meta.description, home = false } = Ast
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 
 const ogUrl = new URL("/og.jpg", Astro.site).href;
+
+// Mesure d'audience Umami (sans cookies) : chargée seulement si l'identifiant du site est renseigné
+const umamiId = import.meta.env.PUBLIC_UMAMI_WEBSITE_ID;
+const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC || "https://cloud.umami.is/script.js";
 
 const jsonLd = {
 	"@context": "https://schema.org",
@@ -77,6 +83,8 @@ const jsonLd = {
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 		<link rel="preload" href={antonUrl} as="font" type="font/woff2" crossorigin />
 		<link rel="preload" href={interUrl} as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href={barlow600Url} as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href={barlow700Url} as="font" type="font/woff2" crossorigin />
 
 		<meta property="og:type" content="website" />
 		<meta property="og:locale" content="fr_FR" />
@@ -103,6 +111,7 @@ const jsonLd = {
 			})();
 		</script>
 		{home && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+		{umamiId && <script is:inline defer src={umamiSrc} data-website-id={umamiId} />}
 	</head>
 	<body>
 		<a class="skip-link" href="#contenu">Aller au contenu</a>

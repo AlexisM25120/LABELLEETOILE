@@ -7,7 +7,8 @@ import { runLoader } from "./loader";
 import { Trace } from "./trace";
 import { initAnchors, initCallback, initCounters, initFades, initFaq, initGallery, initMur, initPairs } from "./sections";
 import { initViewer } from "./viewer";
-import { debounce, reducedMotion, storage } from "./util";
+import { initMesure } from "./mesure";
+import { debounce, reducedMotion, storage, yieldToMain } from "./util";
 
 gsap.registerPlugin(ScrollTrigger);
 ScrollTrigger.config({ ignoreMobileResize: true });
@@ -88,16 +89,21 @@ hero.onProgress = (p1, p2) => {
 };
 hero.render();
 
-// --- Sections
-initCounters(reduced);
-initFades(reduced);
-initGallery(lenis);
-initPairs();
-initMur(reduced);
-initViewer(lenis, reduced);
-initFaq(reduced);
-initAnchors(lenis);
-initCallback();
+// --- Mesure d'audience (Umami, sans cookies) : clics sur les actions
+initMesure();
+
+// --- Sections : après une pause, pour que le hero s'affiche sans attendre (tâche longue coupée en deux)
+const sectionsReady = yieldToMain().then(() => {
+	initCounters(reduced);
+	initFades(reduced);
+	initGallery(lenis);
+	initPairs();
+	initMur(reduced);
+	initViewer(lenis, reduced);
+	initFaq(reduced);
+	initAnchors(lenis);
+	initCallback();
+});
 
 // --- Redimensionnement (largeur seulement : la barre d'adresse iOS ne doit rien recalculer)
 let lastW = window.innerWidth;
@@ -123,6 +129,7 @@ async function start() {
 		await Promise.race([preload, wait(1500)]);
 		if (!reduced) gsap.fromTo(hero.zoom, { scale: 1.06 }, { scale: 1, duration: 1.4, ease: "power3.out", clearProps: "transform" });
 	}
+	await sectionsReady;
 	hero.introReveal();
 	html.classList.remove("is-loading");
 	lenis?.start();

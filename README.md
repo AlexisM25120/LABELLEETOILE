@@ -106,6 +106,12 @@ export const SHOW_CALLBACK = true;
 
 Le formulaire (nom + téléphone) s'affiche dans la section « Passez nous voir. ». Mode démo : rien n'est envoyé. Pour la mise en ligne, le brancher sur Web3Forms (voir `05_STACK-TECHNIQUE/Config-Web3Forms`).
 
+## Mesure d'audience (Umami)
+
+Umami, sans cookies (pas de bandeau de consentement). Le script n'est chargé que si la variable d'environnement `PUBLIC_UMAMI_WEBSITE_ID` est renseignée (réglages du site sur Netlify ou Vercel) ; `PUBLIC_UMAMI_SRC` change l'adresse du script (défaut : `https://cloud.umami.is/script.js`).
+
+Événements envoyés au clic (`src/scripts/mesure.ts`) : `appel` (liens `tel:`), `itineraire` (lien Google Maps), `whatsapp` (liens wa.me, aucun pour l'instant), `rdv` (liens marqués `data-rdv`, aucun pour l'instant), `devis` (envoi du formulaire « Être rappelé »).
+
 ## Déployer une préversion
 
 Le dépôt contient `netlify.toml` et `vercel.json`. La préversion reste en `noindex` (balise meta + en-tête `X-Robots-Tag`).

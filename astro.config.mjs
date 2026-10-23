@@ -86,6 +86,8 @@ const site =
 export default defineConfig({
 	site,
 	devToolbar: { enabled: false },
+	// CSS en ligne dans la page : pas de feuille de style bloquante avant le premier affichage
+	build: { inlineStylesheets: "always" },
 	integrations: [heroFrames()],
 	vite: {
 		plugins: [tailwindcss()],

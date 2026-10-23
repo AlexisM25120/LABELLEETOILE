@@ -17,6 +17,12 @@ import { contact, mobileBar } from "../content/site";
 </div>
 
 <style>
+	/* La barre fixe ne masque jamais la fin de la page (hauteur : 10 px + bouton 48 px + 10 px) */
+	@media (max-width: 1023.98px) {
+		:global(body) {
+			padding-bottom: calc(68px + env(safe-area-inset-bottom));
+		}
+	}
 	.mobile-bar {
 		position: fixed;
 		inset: auto 0 0;

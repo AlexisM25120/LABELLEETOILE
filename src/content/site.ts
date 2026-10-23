@@ -607,8 +607,8 @@ export const footer = {
 	legal: "Mentions légales",
 	privacy: "Confidentialité",
 	credit: "Site réalisé par",
-	creditName: "Alexo Webdesign",
-	creditUrl: "https://alexo-webdesign.fr",
+	creditName: "Alexo",
+	creditUrl: "https://alexowebdesign.com",
 	backToTop: "Haut de page",
 };
 
