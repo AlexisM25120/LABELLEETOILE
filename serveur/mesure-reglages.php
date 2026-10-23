@@ -22,8 +22,8 @@ return [
 		'appel' => 'Appels',
 		'itineraire' => 'Itinéraires',
 	],
-	// [À VALIDER] e-mail affiché sur le site (A-VALIDER.md, « E-mail »)
-	'destinataire' => 'carrosserielabelleetoile@gmail.com',
+	// Rapport mensuel envoyé à Alexo (décision d'Alexis du 24/10/2026), qui transmet les chiffres au client
+	'destinataire' => 'alexo.webdesign@gmail.com',
 	'expediteur' => 'site@carrosserie-labelleetoile.fr',
 	'signature' => 'Alexo Web Design',
 ];
