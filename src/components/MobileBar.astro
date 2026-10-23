@@ -38,4 +38,17 @@ import { contact, mobileBar } from "../content/site";
 	:global(html.no-js) .mobile-bar {
 		transform: none;
 	}
+	/* Très petits écrans (moins de 360 px) : deux boutons égaux et plus serrés, sinon « Itinéraire » sort de l'écran */
+	@media (max-width: 359.98px) {
+		.mobile-bar > div {
+			grid-template-columns: 1fr 1fr;
+			gap: 8px;
+		}
+		.mobile-bar .btn {
+			gap: 0.45rem;
+			padding-inline: 0.6rem;
+			font-size: 0.95rem;
+			letter-spacing: 0.08em;
+		}
+	}
 </style>

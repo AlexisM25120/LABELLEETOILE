@@ -9,7 +9,7 @@ import interUrl from "@fontsource-variable/inter/files/inter-latin-wght-normal.w
 import barlow600Url from "@fontsource/barlow-condensed/files/barlow-condensed-latin-600-normal.woff2?url";
 import barlow700Url from "@fontsource/barlow-condensed/files/barlow-condensed-latin-700-normal.woff2?url";
 import MaquetteBanner from "../components/MaquetteBanner.astro";
-import { contact, meta, final } from "../content/site";
+import { contact, meta } from "../content/site";
 
 interface Props {
 	title?: string;
@@ -54,7 +54,7 @@ const jsonLd = {
 		opens: h.opens,
 		closes: h.closes,
 	})),
-	areaServed: final.zone.map((z) => ({ "@type": "City", name: z.name })),
+	areaServed: contact.areaServed.map((z) => ({ "@type": z.type, name: z.name })),
 	aggregateRating: {
 		"@type": "AggregateRating",
 		ratingValue: contact.rating.value,

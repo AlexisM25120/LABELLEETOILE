@@ -476,10 +476,14 @@ const framesVars =
 		position: relative;
 		height: 100%;
 	}
+	/* Marge du texte du hero sur mobile : plus large que celle du site (16 px), le titre est très gros */
+	.hero {
+		--hero-gutter: 24px;
+	}
 	.hero-copy {
 		position: absolute;
-		left: 16px;
-		right: 16px;
+		left: var(--hero-gutter);
+		right: var(--hero-gutter);
 		top: calc(var(--banner-h) + 60px + 4svh);
 		pointer-events: auto;
 	}
@@ -508,8 +512,9 @@ const framesVars =
 	.hero-eyebrow {
 		margin-bottom: 1rem;
 	}
+	/* La ligne la plus large (« À Charquemont ») fait 6,22 em : le titre rétrécit seulement s'il ne tient plus */
 	.hero-title {
-		font-size: clamp(2.9rem, 13.2vw, 7.6rem);
+		font-size: clamp(2.25rem, min(13.2vw, (100vw - 2 * var(--hero-gutter)) / 6.3), 7.6rem);
 		line-height: 0.9;
 		text-shadow: 0 4px 30px rgb(0 0 0 / 0.35);
 	}
@@ -562,8 +567,8 @@ const framesVars =
 
 	.motto {
 		position: absolute;
-		left: 16px;
-		right: 16px;
+		left: var(--hero-gutter);
+		right: var(--hero-gutter);
 		top: calc(var(--banner-h) + 60px + 6svh);
 		display: flex;
 		flex-direction: column;
@@ -681,7 +686,7 @@ const framesVars =
 	/* Grand écran : le titre tient à gauche de la porte (--door-x : bord gauche de la porte à l'écran) */
 	@media (min-width: 1024px) {
 		.hero[data-mode="frames"] {
-			--copy-x: clamp(24px, 4vw, 72px);
+			--copy-x: clamp(48px, 6vw, 120px);
 		}
 		.hero[data-mode="frames"] .hero-copy,
 		.hero[data-mode="frames"] .motto {
@@ -692,7 +697,11 @@ const framesVars =
 			max-width: calc(var(--door-x, 40vw) - var(--copy-x) - 36px);
 		}
 		.hero[data-mode="frames"] .hero-title {
-			font-size: clamp(2.1rem, calc((var(--door-x, 500px) - 8vw) / 6.4), 5.6rem);
+			font-size: clamp(
+				2.1rem,
+				min((var(--door-x, 500px) - 8vw) / 6.4, (var(--door-x, 500px) - var(--copy-x) - 36px) / 6.3),
+				5.6rem
+			);
 		}
 		/* colonne étroite (tablette à l'horizontale) : le bouton peut passer sur deux lignes */
 		.hero[data-mode="frames"] .hero-cta .btn {

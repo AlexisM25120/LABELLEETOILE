@@ -45,6 +45,12 @@ export const contact = {
 		{ days: ["Saturday"], opens: "08:00", closes: "12:00" },
 	],
 	siret: "à compléter",
+	// Zone desservie déclarée aux moteurs de recherche (JSON-LD), validée le 23/10/2026
+	areaServed: [
+		{ type: "City", name: "Charquemont" },
+		{ type: "City", name: "Maîche" },
+		{ type: "Place", name: "Haut-Doubs" },
+	],
 };
 
 export const meta = {
