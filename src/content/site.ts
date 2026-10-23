@@ -581,16 +581,12 @@ export const final = {
 	zoneLabel: "On vient de",
 	// Même zone que le JSON-LD (contact.areaServed), validée le 23/10/2026
 	zoneText: "Charquemont, Maîche et le Haut-Doubs.",
-	// Positions approximatives, carte stylisée [À VALIDER : communes de la carte]
+	// Carte stylisée, positions approximatives : les communes nommées dans zoneText, et la région en toile de fond
 	zone: [
 		{ name: "Charquemont", lat: 47.2142, lng: 6.8194, main: true },
 		{ name: "Maîche", lat: 47.2513, lng: 6.8011, note: "6 min" },
-		{ name: "Damprichard", lat: 47.2436, lng: 6.8839 },
-		{ name: "Le Russey", lat: 47.1611, lng: 6.7286 },
-		{ name: "Frambouhans", lat: 47.2053, lng: 6.7731 },
-		{ name: "Trévillers", lat: 47.2953, lng: 6.8667 },
-		{ name: "Fournet-Blancheroche", lat: 47.1903, lng: 6.8583 },
 	],
+	zoneRegion: "Haut-Doubs",
 	emailLabel: "E-mail",
 	facebookLabel: "Facebook",
 	arrival: "Vous êtes arrivé.",
