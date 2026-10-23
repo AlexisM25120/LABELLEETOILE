@@ -645,7 +645,7 @@ export const legal = {
 			},
 			{
 				title: "Conception",
-				lines: ["Alexo Webdesign · Alexis Moine, Maîche (Doubs)"],
+				lines: ["Alexo Webdesign · Alexis Moine, Maîche (Doubs)", footer.creditUrl],
 			},
 			{
 				title: "Photos et logo",
