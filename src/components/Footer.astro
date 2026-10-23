@@ -72,14 +72,9 @@ const href = (h: string) => (home ? h : `/${h}`);
 	.site-footer {
 		position: relative;
 		overflow: hidden;
-		padding: 4.5rem 0 calc(6.5rem + env(safe-area-inset-bottom));
+		padding: 4.5rem 0 3rem;
 		background: var(--color-deep);
 		border-top: 1px solid var(--color-line);
-	}
-	@media (min-width: 1024px) {
-		.site-footer {
-			padding-bottom: 3rem;
-		}
 	}
 	.bricks {
 		position: absolute;

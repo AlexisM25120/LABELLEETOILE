@@ -3,6 +3,8 @@
 Tout ce qui est dans cette liste a été écrit ou supposé pour la maquette. Le reste vient de sources vérifiées : façade et enseigne, fiche Google, Pages Jaunes, page Facebook.
 Chaque correction se fait dans `src/content/site.ts`.
 
+**Version courte (24/10/2026)** : `../02_Contenu-fourni-client/Validation-courte-LA-BELLE-ETOILE.pdf`, une page A4 de questions fermées + les textes qui l'engagent (prestations, « Pourquoi la Belle Étoile », FAQ). Sans remarque de Sébastien **avant le vendredi 6 novembre 2026**, le reste est considéré comme validé.
+
 ## 1. Questions à poser
 
 - [ ] **Pare-brise** : remplacement, réparation d'impact, ou les deux ? Prise en charge par l'assurance bris de glace ?
@@ -17,7 +19,8 @@ Chaque correction se fait dans `src/content/site.ts`.
 - [ ] **Droit à l'image** : accord de Sébastien pour publier sur le site les photos de sa page Facebook (89 photos retenues, plaques floutées, liste dans `SELECTION-PHOTOS.md`). Les propriétaires des voitures ont-ils été d'accord pour Facebook, et le sont-ils pour le site ?
 - [ ] **Deuxième numéro** : l'ancienne enseigne de la façade affichait aussi le **09 54 68 32 83**. On l'affiche sur le site, ou seulement le portable 06 52 78 36 23 ?
 - [ ] **Logo** : la photo de profil de la page Facebook (`ref-logo-facebook-01.jpg` : badge rond noir et or, berline noire, étoile, pistolet à peinture, « La Belle Étoile » en lettres manuscrites et le 06 52 78 36 23) n'est pas le logo de l'enseigne de la façade (croissant et étoile dorés, « Exigence · Qualité · Passion »). Lequel est officiel ? La maquette utilise celui de l'enseigne. L'ancienne façade blanche avait encore un troisième logo (voiture rouge).
-- [ ] **Ancienneté** : la page Facebook montre l'atelier dès décembre 2020 (`atelier-facade-03`) et des chantiers dès avril 2021, alors que le site annonce « depuis 2017 » (date de création de l'entreprise individuelle). Garder 2017 ? Et l'atelier était-il déjà rue de la Gare ?
+- [ ] **Forme juridique** : confirmer qu'il n'y a pas de SARL à son nom (le registre national ne montre que l'EI, SIREN 831 612 809 ; le site affiche « Sébastien Cavigneaux EI »).
+- [ ] **Ancienneté** : d'après le registre, entreprise créée en septembre 2017 aux Bréseux, installée rue de la Gare depuis avril 2018 (la page Facebook montre l'atelier dès décembre 2020). Le site dit maintenant « Depuis 2017 · création de l'entreprise », « Rue de la Gare, depuis 2018 » et « a créé son entreprise en 2017 et s'est installé rue de la Gare en 2018 » ; plus aucun texte ne dit « à Charquemont depuis 2017 ». Sébastien préfère-t-il raconter les deux étapes (Les Bréseux puis Charquemont) ou garder la version courte ?
 - [ ] **Prestations vues dans les photos et absentes du site** (à proposer, pas ajoutées) : peinture de jantes (`jantes-noires`), utilitaires et pick-up (`toyota-hilux`, `dodge-ram`, `pickup-noir`, `utilitaire-blanc`, `renault-espace`), réparations lourdes de structure (`audi-a6-allroad`, `toyota-land-cruiser`). Le mur de réalisations en montre déjà certaines.
 
 ## 2. Textes inventés, à relire
@@ -43,7 +46,7 @@ Les 9 intitulés viennent de l'enseigne et de Pages Jaunes. **Les descriptions s
 - « Contrôle final avec vous » à la restitution.
 
 ### L'atelier et l'équipe
-- Parcours : « Sébastien Cavigneaux a ouvert la Carrosserie La Belle Étoile en 2017, rue de la Gare. Carrossier-peintre de métier, il traite chaque voiture comme la sienne… »
+- Parcours : « Sébastien Cavigneaux a créé son entreprise en 2017 et s'est installé rue de la Gare en 2018. Carrossier-peintre de métier, il traite chaque voiture comme la sienne… » (dates d'après le registre ; la suite est inventée)
 - Équipement listé : cabine de peinture, marbre, débosselage sans peinture.
 
 ### FAQ
@@ -71,7 +74,8 @@ Toutes les photos viennent de la page Facebook. Les dates affichées sont **les 
 - Projets écartés faute de modèle identifiable ou de photo nette : voir `SELECTION-PHOTOS.md`.
 
 ### Zone d'intervention
-- Charquemont, Maîche, Damprichard, Le Russey, Frambouhans, Trévillers, Fournet-Blancheroche : liste supposée. La carte est stylisée et les positions sont approximatives.
+- Texte de la zone et JSON-LD : « Charquemont, Maîche et le Haut-Doubs », validé le 23/10/2026.
+- La carte reprend la même zone (Charquemont, Maîche, « Haut-Doubs » en fond). Elle est stylisée et les positions sont approximatives.
 
 ### Petits textes d'interface
 - « Vous ne restez pas sans voiture », « Vous êtes arrivé. », « Sébastien vous rappelle dès qu'il sort de la cabine » (bloc « Être rappelé », désactivé).
@@ -82,7 +86,8 @@ Toutes les photos viennent de la page Facebook. Les dates affichées sont **les 
 - [ ] **URL de la fiche Google** pour le bouton « Lire tous les avis » (actuellement une recherche Google) : `contact.googleReviewsUrl`.
 - [ ] **Note et nombre d'avis** : 4,8/5 sur 37 avis au 05/10/2026, à mettre à jour à la mise en ligne.
 - [ ] **Position GPS exacte** de l'atelier (le JSON-LD utilise le centre de Charquemont).
-- [ ] **Mentions légales** : SIRET, RCS, capital social, n° de TVA de la SARL La Belle Étoile (créée le 19/11/2025), hébergeur.
+- [ ] **TVA** : numéro de TVA intracommunautaire, ou franchise en base ?
+- [ ] **Hébergeur** : à renseigner dans les mentions légales à la mise en ligne.
 - [ ] **Nom de domaine** souhaité (provisoire : carrosserie-labelleetoile.fr).
 - [ ] **E-mail** affiché : carrosserielabelleetoile@gmail.com, garder celle-ci ?
 

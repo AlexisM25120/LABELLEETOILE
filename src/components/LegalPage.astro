@@ -26,9 +26,17 @@ const { page } = Astro.props;
 			page.sections.map((s) => (
 				<section>
 					<h2 class="label">{s.title}</h2>
-					{s.lines.map((l) => (
-						<p>{fr(l)}</p>
-					))}
+					{s.lines.map((l) =>
+						/^https?:\/\//.test(l) ? (
+							<p>
+								<a href={l} class="link-gold">
+									{l.replace(/^https?:\/\//, "")}
+								</a>
+							</p>
+						) : (
+							<p>{fr(l)}</p>
+						),
+					)}
 				</section>
 			))
 		}

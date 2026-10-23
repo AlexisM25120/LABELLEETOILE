@@ -12,10 +12,14 @@ export const SHOW_CALLBACK = false;
 export const contact = {
 	name: "Carrosserie La Belle Étoile",
 	shortName: "La Belle Étoile",
-	legalName: "SARL La Belle Étoile",
+	// Forme juridique vérifiée au registre national (24/10/2026) : entreprise individuelle, activité artisanale
+	legalName: "Sébastien Cavigneaux EI",
+	legalForm: "entrepreneur individuel",
 	manager: "Sébastien Cavigneaux",
 	managerFirstName: "Sébastien",
+	// Création de l'entreprise (registre : septembre 2017, aux Bréseux) ; rue de la Gare depuis avril 2018
 	since: 2017,
+	sinceRueDeLaGare: 2018,
 	phone: "06 52 78 36 23",
 	phoneHref: "tel:+33652783623",
 	phoneIntl: "+33652783623",
@@ -44,7 +48,14 @@ export const contact = {
 		{ days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "14:00", closes: "18:00" },
 		{ days: ["Saturday"], opens: "08:00", closes: "12:00" },
 	],
-	siret: "à compléter",
+	siren: "831 612 809",
+	siret: "831 612 809 00028",
+	// Zone desservie déclarée aux moteurs de recherche (JSON-LD), validée le 23/10/2026
+	areaServed: [
+		{ type: "City", name: "Charquemont" },
+		{ type: "City", name: "Maîche" },
+		{ type: "Place", name: "Haut-Doubs" },
+	],
 };
 
 export const meta = {
@@ -81,7 +92,7 @@ export const loader = {
 export const hero = {
 	eyebrow: "Carrosserie · Peinture · Charquemont (25)",
 	h1: ["Carrosserie & peinture", "à Charquemont"],
-	sub: "Peinture et redressage haut de gamme, toutes marques, depuis 2017. À 6 minutes de Maîche.",
+	sub: "Peinture et redressage haut de gamme, toutes marques. À 6 minutes de Maîche.",
 	scrollHint: "Faites défiler",
 	motto: ["Exigence", "Qualité", "Passion"],
 	sceneLabel: "La porte de l'atelier s'ouvre, la voiture sort.",
@@ -91,7 +102,7 @@ export const reassurance = {
 	label: "En bref",
 	items: [
 		{ kind: "number", value: 4.8, decimals: 1, suffix: "/5", label: "37 avis Google", labelCount: 37 },
-		{ kind: "number", value: 2017, prefix: "Depuis", label: "à Charquemont" },
+		{ kind: "number", value: 2017, prefix: "Depuis", label: "création de l'entreprise" },
 		{ kind: "text", text: "Cabine de peinture", label: "peinture complète ou partielle" },
 		{ kind: "text", text: "Toutes marques", label: "de la citadine à la Porsche" },
 	],
@@ -513,9 +524,9 @@ export const avis = {
 
 export const atelier = {
 	label: "L'atelier et l'équipe",
-	title: "Rue de la Gare, depuis 2017",
+	title: `Rue de la Gare, depuis ${contact.sinceRueDeLaGare}`,
 	// [À VALIDER] parcours de Sébastien
-	text: "Sébastien Cavigneaux a ouvert la Carrosserie La Belle Étoile en 2017, rue de la Gare. Carrossier-peintre de métier, il traite chaque voiture comme la sienne, de la petite rayure à la restauration complète.",
+	text: "Sébastien Cavigneaux a créé son entreprise en 2017 et s'est installé rue de la Gare en 2018. Carrossier-peintre de métier, il traite chaque voiture comme la sienne, de la petite rayure à la restauration complète.",
 	// Photos de l'atelier (fichiers de réalisations)
 	photos: ["audi-a6-avant-04", "bmw-serie3-noire-07", "chantier-2022-12-24-25"],
 	portraitTitle: "Photo de Sébastien",
@@ -573,17 +584,14 @@ export const final = {
 	addressLabel: "L'atelier",
 	hoursLabel: "Horaires",
 	zoneLabel: "On vient de",
-	zoneText: "Charquemont, Maîche, Damprichard, Le Russey, Frambouhans, Trévillers, Fournet-Blancheroche et alentours.",
-	// Positions approximatives, carte stylisée
+	// Même zone que le JSON-LD (contact.areaServed), validée le 23/10/2026
+	zoneText: "Charquemont, Maîche et le Haut-Doubs.",
+	// Carte stylisée, positions approximatives : les communes nommées dans zoneText, et la région en toile de fond
 	zone: [
 		{ name: "Charquemont", lat: 47.2142, lng: 6.8194, main: true },
 		{ name: "Maîche", lat: 47.2513, lng: 6.8011, note: "6 min" },
-		{ name: "Damprichard", lat: 47.2436, lng: 6.8839 },
-		{ name: "Le Russey", lat: 47.1611, lng: 6.7286 },
-		{ name: "Frambouhans", lat: 47.2053, lng: 6.7731 },
-		{ name: "Trévillers", lat: 47.2953, lng: 6.8667 },
-		{ name: "Fournet-Blancheroche", lat: 47.1903, lng: 6.8583 },
 	],
+	zoneRegion: "Haut-Doubs",
 	emailLabel: "E-mail",
 	facebookLabel: "Facebook",
 	arrival: "Vous êtes arrivé.",
@@ -600,15 +608,15 @@ export const callback = {
 };
 
 export const footer = {
-	tagline: "Carrosserie et peinture à Charquemont, depuis 2017.",
+	tagline: "Carrosserie et peinture depuis 2017.",
 	navTitle: "Le site",
 	contactTitle: "Contact",
 	socialTitle: "Réseaux",
 	legal: "Mentions légales",
 	privacy: "Confidentialité",
 	credit: "Site réalisé par",
-	creditName: "Alexo Webdesign",
-	creditUrl: "https://alexo-webdesign.fr",
+	creditName: "Alexo",
+	creditUrl: "https://alexowebdesign.com",
 	backToTop: "Haut de page",
 };
 
@@ -625,14 +633,13 @@ export const legal = {
 			{
 				title: "Éditeur du site",
 				lines: [
-					contact.legalName,
-					`Gérant et directeur de la publication : ${contact.manager}`,
+					`${contact.legalName} (${contact.legalForm}), enseigne « ${contact.name} »`,
+					`Directeur de la publication : ${contact.manager}`,
 					`${contact.street}, ${contact.postalCode} ${contact.city}`,
 					`Téléphone : ${contact.phone}`,
 					`E-mail : ${contact.email}`,
 					`SIRET : ${contact.siret}`,
-					"RCS : à compléter",
-					"Capital social : à compléter",
+					`Immatriculée au Registre national des entreprises (RNE) sous le n° ${contact.siren}`,
 					"N° TVA intracommunautaire : à compléter",
 				],
 			},
@@ -642,7 +649,7 @@ export const legal = {
 			},
 			{
 				title: "Conception",
-				lines: ["Alexo Webdesign · Alexis Moine, Maîche (Doubs)"],
+				lines: ["Alexo Webdesign · Alexis Moine, Maîche (Doubs)", footer.creditUrl],
 			},
 			{
 				title: "Photos et logo",

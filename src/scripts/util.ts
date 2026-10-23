@@ -151,3 +151,10 @@ export const storage = {
 		} catch {}
 	},
 };
+
+/** Rend la main au navigateur (affichage, saisie) avant la suite du travail */
+export function yieldToMain() {
+	const s = (globalThis as { scheduler?: { yield?: () => Promise<void> } }).scheduler;
+	if (s?.yield) return s.yield();
+	return new Promise<void>((r) => setTimeout(r, 0));
+}

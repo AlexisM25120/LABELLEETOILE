@@ -2,6 +2,7 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type Lenis from "lenis";
+import { trackForm } from "./mesure";
 import { clamp, debounce } from "./util";
 
 const fmt = (v: number, dec: number) => v.toFixed(dec).replace(".", ",");
@@ -253,6 +254,7 @@ export function initCallback() {
 			return;
 		}
 		// Maquette : aucun envoi réel
+		trackForm();
 		form.querySelector<HTMLElement>("[data-callback-ok]")!.hidden = false;
 		form.reset();
 	});

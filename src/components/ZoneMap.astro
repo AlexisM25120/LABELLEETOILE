@@ -1,5 +1,5 @@
 ---
-// Carte stylisée de la zone (positions approximatives) : points dorés autour de Charquemont.
+// Carte stylisée de la zone (positions approximatives) : Charquemont, Maîche, et le nom de la région en fond.
 import { final } from "../content/site";
 
 const main = final.zone.find((z) => z.main)!;
@@ -18,7 +18,7 @@ const anchor = (t: { x: number }) => (t.x < cx - 20 ? "end" : "start");
 ---
 
 <svg class="zone" viewBox={`0 0 ${W} ${H}`} role="img" aria-labelledby="zone-title">
-	<title id="zone-title">Zone d'intervention : {final.zone.map((z) => z.name).join(", ")}</title>
+	<title id="zone-title">Zone d'intervention : {final.zoneText}</title>
 	<defs>
 		<radialGradient id="zone-glow">
 			<stop offset="0" stop-color="#d6a84a" stop-opacity=".22"></stop>
@@ -26,6 +26,7 @@ const anchor = (t: { x: number }) => (t.x < cx - 20 ? "end" : "start");
 		</radialGradient>
 	</defs>
 	<circle cx={cx} cy={cy} r={km * 11} fill="url(#zone-glow)"></circle>
+	<text x={cx} y={cy + km * 7.6} text-anchor="middle" class="region">{final.zoneRegion}</text>
 	{
 		[5, 10].map((r) => (
 			<g>
@@ -92,6 +93,14 @@ const anchor = (t: { x: number }) => (t.x < cx - 20 ? "end" : "start");
 	}
 	.ring {
 		fill: color-mix(in srgb, var(--color-gold) 60%, transparent);
+	}
+	.region {
+		font-family: var(--font-label);
+		font-weight: 600;
+		font-size: 14px;
+		letter-spacing: 0.42em;
+		text-transform: uppercase;
+		fill: color-mix(in srgb, var(--color-gold) 55%, transparent);
 	}
 	.pulse {
 		transform-origin: center;

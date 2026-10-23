@@ -17,19 +17,42 @@ import { contact, mobileBar } from "../content/site";
 </div>
 
 <style>
+	/* La barre fixe ne masque jamais la fin de la page (hauteur : 10 px + bouton 48 px + 10 px) */
+	@media (max-width: 1023.98px) {
+		:global(body) {
+			padding-bottom: calc(68px + env(safe-area-inset-bottom));
+		}
+	}
+	/* Visible dès l'ouverture, au-dessus de l'écran d'accueil (z 90), sous le bandeau maquette (95) et la visionneuse (120) */
 	.mobile-bar {
 		position: fixed;
 		inset: auto 0 0;
-		z-index: 72;
+		z-index: 92;
 		padding-bottom: max(10px, env(safe-area-inset-bottom));
 		background: linear-gradient(to top, color-mix(in srgb, var(--color-deep) 96%, transparent) 55%, transparent);
-		transform: translateY(110%);
-		transition: transform 0.5s var(--ease-out-expo);
+		animation: mobile-bar-in 0.5s var(--ease-out-expo) both;
 	}
-	:global(.mobile-bar.is-on) {
-		transform: none;
+	@keyframes mobile-bar-in {
+		from {
+			transform: translateY(110%);
+		}
 	}
-	:global(html.no-js) .mobile-bar {
-		transform: none;
+	@media (prefers-reduced-motion: reduce) {
+		.mobile-bar {
+			animation: none;
+		}
+	}
+	/* Très petits écrans (moins de 360 px) : deux boutons égaux et plus serrés, sinon « Itinéraire » sort de l'écran */
+	@media (max-width: 359.98px) {
+		.mobile-bar > div {
+			grid-template-columns: 1fr 1fr;
+			gap: 8px;
+		}
+		.mobile-bar .btn {
+			gap: 0.45rem;
+			padding-inline: 0.6rem;
+			font-size: 0.95rem;
+			letter-spacing: 0.08em;
+		}
 	}
 </style>
