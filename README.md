@@ -5,6 +5,8 @@ Maquette à présenter au client le **lundi 12 octobre 2026**. Non publiée, `no
 
 Stack : Astro (statique) · Tailwind CSS v4 · GSAP + ScrollTrigger · Lenis · polices auto-hébergées (@fontsource).
 
+**Polices : exception au socle Alexo (2 familles maximum), décidée le 24/10/2026.** Le site garde ses 3 familles (Anton pour les titres, Inter pour le texte, Barlow Condensed pour les libellés et boutons), qui font partie de l'identité visuelle. Les trois sont préchargées et Lighthouse mobile reste à 96 en performance.
+
 ## Lancer le site
 
 ```bash

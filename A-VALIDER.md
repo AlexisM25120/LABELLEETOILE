@@ -3,6 +3,8 @@
 Tout ce qui est dans cette liste a été écrit ou supposé pour la maquette. Le reste vient de sources vérifiées : façade et enseigne, fiche Google, Pages Jaunes, page Facebook.
 Chaque correction se fait dans `src/content/site.ts`.
 
+**Version courte (24/10/2026)** : `../02_Contenu-fourni-client/Validation-courte-LA-BELLE-ETOILE.pdf`, une page A4 de questions fermées + les textes qui l'engagent (prestations, « Pourquoi la Belle Étoile », FAQ). Sans remarque de Sébastien **avant le vendredi 6 novembre 2026**, le reste est considéré comme validé.
+
 ## 1. Questions à poser
 
 - [ ] **Pare-brise** : remplacement, réparation d'impact, ou les deux ? Prise en charge par l'assurance bris de glace ?

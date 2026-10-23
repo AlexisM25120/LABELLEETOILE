@@ -2,7 +2,7 @@
 
 Bibliothèque d'origine : `../02_Contenu-fourni-client/photos/facebook/` (872 photos, 53 projets, récupérées le 10/10/2026). Elle n'est ni copiée en entier, ni modifiée.
 
-**89 photos publiées, 41 projets** (13 en galerie, 24 au mur, le reste pour les prestations, les étapes et l'atelier). Copiées dans `assets/photos/facebook/` sous leur nom d'origine par `npm run photos` (liste : `scripts/photos-facebook.json`). **21 photos ont leur plaque floutée** (sur la copie seulement).
+**89 photos publiées, 41 projets** (13 en galerie, 24 au mur, le reste pour les prestations, les étapes et l'atelier). Copiées dans `assets/photos/facebook/` sous leur nom d'origine par `npm run photos` (liste : `scripts/photos-facebook.json`). **22 photos ont leur plaque floutée** (sur la copie seulement).
 
 Méthode : planches contact de tous les projets, puis chaque photo publiée ouverte en grand (netteté, cadrage, plaques, visages). Écartés : flou, doublons, bazar au premier plan, personnes reconnaissables.
 
@@ -172,15 +172,18 @@ Sébastien n'a masqué les plaques lui-même que sur quelques photos de la Panam
 | `panamera-gts-01.jpg` | 1 |
 | `panamera-gts-03.jpg` | 1 |
 | `bmw-e30-01.jpg` | 1 |
-| `porsche-911-01.jpg` | 1 |
+| `porsche-911-01.jpg` | 3 (dont 2 plaques vues en reflet dans les vitres du bureau, ajoutées le 24/10/2026) |
 | `porsche-macan-gris-01.jpg` | 1 |
 | `lotus-exige-02.jpg` | 1 |
 | `audi-rs3-02.jpg` | 1 |
 | `utilitaire-blanc-06.jpg` | 1 |
+| `ford-mustang-08.jpg` | 1 (Audi A6 noire garée derrière, partie visible de la plaque avant, ajoutée le 24/10/2026) |
 
 Recadrées : `ferrari-458-02.jpg` (personne en bord de cadre).
 
 Vérification : chaque photo publiée a été agrandie à l'endroit des plaques visibles, y compris celles des voitures garées à côté (berline noire sur `bmw-estoril-02`, voiture voisine sur `panamera-gts-01`). Aucun visage reconnaissable dans la sélection.
+
+Deuxième passage le 24/10/2026, sur les 89 photos du site (planches puis agrandissements) et sur les images du hero (vidéo, façade, image de partage) : 3 plaques encore lisibles ont été ajoutées (ci-dessus). Les images du hero n'en montrent aucune.
 
 ## Projets écartés
 

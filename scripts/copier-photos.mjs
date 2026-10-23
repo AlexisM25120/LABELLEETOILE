@@ -1,6 +1,6 @@
 // Copie les photos Facebook retenues (scripts/photos-facebook.json) de la bibliothèque
 // vers assets/photos/facebook/, en floutant les plaques d'immatriculation (contour exact de chaque plaque).
-// Usage : npm run photos
+// Usage : npm run photos  (toutes les photos)  ·  npm run photos -- nom-01 nom-02  (seulement celles-là)
 // Les originaux de la bibliothèque ne sont jamais modifiés : seules les copies sont floutées.
 import fs from "node:fs";
 import path from "node:path";
@@ -69,9 +69,14 @@ async function blurPlate(img, W, H, quad) {
 	return { input, left, top };
 }
 
+// Noms passés en argument : on ne recopie que ces photos (les autres copies restent telles quelles)
+const only = process.argv.slice(2);
+for (const n of only) if (!(n in config.photos)) throw new Error(`photo absente de photos-facebook.json : ${n}`);
+
 let count = 0;
 let blurredCount = 0;
 for (const [name, opts] of Object.entries(config.photos)) {
+	if (only.length && !only.includes(name)) continue;
 	const src = path.join(lib, `${name}.jpg`);
 	const out = path.join(dest, `${name}.jpg`);
 	if (!fs.existsSync(src)) {
