@@ -579,8 +579,9 @@ export const final = {
 	addressLabel: "L'atelier",
 	hoursLabel: "Horaires",
 	zoneLabel: "On vient de",
-	zoneText: "Charquemont, Maîche, Damprichard, Le Russey, Frambouhans, Trévillers, Fournet-Blancheroche et alentours.",
-	// Positions approximatives, carte stylisée
+	// Même zone que le JSON-LD (contact.areaServed), validée le 23/10/2026
+	zoneText: "Charquemont, Maîche et le Haut-Doubs.",
+	// Positions approximatives, carte stylisée [À VALIDER : communes de la carte]
 	zone: [
 		{ name: "Charquemont", lat: 47.2142, lng: 6.8194, main: true },
 		{ name: "Maîche", lat: 47.2513, lng: 6.8011, note: "6 min" },

@@ -71,7 +71,8 @@ Toutes les photos viennent de la page Facebook. Les dates affichées sont **les 
 - Projets écartés faute de modèle identifiable ou de photo nette : voir `SELECTION-PHOTOS.md`.
 
 ### Zone d'intervention
-- Charquemont, Maîche, Damprichard, Le Russey, Frambouhans, Trévillers, Fournet-Blancheroche : liste supposée. La carte est stylisée et les positions sont approximatives.
+- Texte de la zone et JSON-LD : « Charquemont, Maîche et le Haut-Doubs », validé le 23/10/2026.
+- La **carte** montre encore 7 points (Charquemont, Maîche, Damprichard, Le Russey, Frambouhans, Trévillers, Fournet-Blancheroche) : liste supposée, à garder ou réduire. La carte est stylisée et les positions sont approximatives.
 
 ### Petits textes d'interface
 - « Vous ne restez pas sans voiture », « Vous êtes arrivé. », « Sébastien vous rappelle dès qu'il sort de la cabine » (bloc « Être rappelé », désactivé).
