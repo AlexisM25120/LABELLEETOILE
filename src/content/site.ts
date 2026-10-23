@@ -12,7 +12,7 @@ export const SHOW_CALLBACK = false;
 export const contact = {
 	name: "Carrosserie La Belle Étoile",
 	shortName: "La Belle Étoile",
-	// Forme juridique d'après le registre : entreprise individuelle au nom de l'exploitant [À VALIDER]
+	// Forme juridique vérifiée au registre national (24/10/2026) : entreprise individuelle, activité artisanale
 	legalName: "Sébastien Cavigneaux EI",
 	legalForm: "entrepreneur individuel",
 	manager: "Sébastien Cavigneaux",
@@ -48,6 +48,7 @@ export const contact = {
 		{ days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "14:00", closes: "18:00" },
 		{ days: ["Saturday"], opens: "08:00", closes: "12:00" },
 	],
+	siren: "831 612 809",
 	siret: "831 612 809 00028",
 	// Zone desservie déclarée aux moteurs de recherche (JSON-LD), validée le 23/10/2026
 	areaServed: [
@@ -638,7 +639,7 @@ export const legal = {
 					`Téléphone : ${contact.phone}`,
 					`E-mail : ${contact.email}`,
 					`SIRET : ${contact.siret}`,
-					"Immatriculation : à compléter",
+					`Immatriculée au Registre national des entreprises (RNE) sous le n° ${contact.siren}`,
 					"N° TVA intracommunautaire : à compléter",
 				],
 			},
