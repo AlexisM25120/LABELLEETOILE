@@ -12,10 +12,14 @@ export const SHOW_CALLBACK = false;
 export const contact = {
 	name: "Carrosserie La Belle Étoile",
 	shortName: "La Belle Étoile",
-	legalName: "SARL La Belle Étoile",
+	// Forme juridique d'après le registre : entreprise individuelle au nom de l'exploitant [À VALIDER]
+	legalName: "Sébastien Cavigneaux EI",
+	legalForm: "entrepreneur individuel",
 	manager: "Sébastien Cavigneaux",
 	managerFirstName: "Sébastien",
+	// Création de l'entreprise (registre : septembre 2017, aux Bréseux) ; rue de la Gare depuis avril 2018
 	since: 2017,
+	sinceRueDeLaGare: 2018,
 	phone: "06 52 78 36 23",
 	phoneHref: "tel:+33652783623",
 	phoneIntl: "+33652783623",
@@ -44,7 +48,7 @@ export const contact = {
 		{ days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "14:00", closes: "18:00" },
 		{ days: ["Saturday"], opens: "08:00", closes: "12:00" },
 	],
-	siret: "à compléter",
+	siret: "831 612 809 00028",
 	// Zone desservie déclarée aux moteurs de recherche (JSON-LD), validée le 23/10/2026
 	areaServed: [
 		{ type: "City", name: "Charquemont" },
@@ -87,7 +91,7 @@ export const loader = {
 export const hero = {
 	eyebrow: "Carrosserie · Peinture · Charquemont (25)",
 	h1: ["Carrosserie & peinture", "à Charquemont"],
-	sub: "Peinture et redressage haut de gamme, toutes marques, depuis 2017. À 6 minutes de Maîche.",
+	sub: "Peinture et redressage haut de gamme, toutes marques. À 6 minutes de Maîche.",
 	scrollHint: "Faites défiler",
 	motto: ["Exigence", "Qualité", "Passion"],
 	sceneLabel: "La porte de l'atelier s'ouvre, la voiture sort.",
@@ -97,7 +101,7 @@ export const reassurance = {
 	label: "En bref",
 	items: [
 		{ kind: "number", value: 4.8, decimals: 1, suffix: "/5", label: "37 avis Google", labelCount: 37 },
-		{ kind: "number", value: 2017, prefix: "Depuis", label: "à Charquemont" },
+		{ kind: "number", value: 2017, prefix: "Depuis", label: "création de l'entreprise" },
 		{ kind: "text", text: "Cabine de peinture", label: "peinture complète ou partielle" },
 		{ kind: "text", text: "Toutes marques", label: "de la citadine à la Porsche" },
 	],
@@ -519,9 +523,9 @@ export const avis = {
 
 export const atelier = {
 	label: "L'atelier et l'équipe",
-	title: "Rue de la Gare, depuis 2017",
+	title: `Rue de la Gare, depuis ${contact.sinceRueDeLaGare}`,
 	// [À VALIDER] parcours de Sébastien
-	text: "Sébastien Cavigneaux a ouvert la Carrosserie La Belle Étoile en 2017, rue de la Gare. Carrossier-peintre de métier, il traite chaque voiture comme la sienne, de la petite rayure à la restauration complète.",
+	text: "Sébastien Cavigneaux a créé son entreprise en 2017 et s'est installé rue de la Gare en 2018. Carrossier-peintre de métier, il traite chaque voiture comme la sienne, de la petite rayure à la restauration complète.",
 	// Photos de l'atelier (fichiers de réalisations)
 	photos: ["audi-a6-avant-04", "bmw-serie3-noire-07", "chantier-2022-12-24-25"],
 	portraitTitle: "Photo de Sébastien",
@@ -603,7 +607,7 @@ export const callback = {
 };
 
 export const footer = {
-	tagline: "Carrosserie et peinture à Charquemont, depuis 2017.",
+	tagline: "Carrosserie et peinture depuis 2017.",
 	navTitle: "Le site",
 	contactTitle: "Contact",
 	socialTitle: "Réseaux",
@@ -628,14 +632,13 @@ export const legal = {
 			{
 				title: "Éditeur du site",
 				lines: [
-					contact.legalName,
-					`Gérant et directeur de la publication : ${contact.manager}`,
+					`${contact.legalName} (${contact.legalForm}), enseigne « ${contact.name} »`,
+					`Directeur de la publication : ${contact.manager}`,
 					`${contact.street}, ${contact.postalCode} ${contact.city}`,
 					`Téléphone : ${contact.phone}`,
 					`E-mail : ${contact.email}`,
 					`SIRET : ${contact.siret}`,
-					"RCS : à compléter",
-					"Capital social : à compléter",
+					"Immatriculation : à compléter",
 					"N° TVA intracommunautaire : à compléter",
 				],
 			},
