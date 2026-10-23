@@ -2,7 +2,7 @@
 
 Mise en place le 24/10/2026 à la place d'Umami (socle commun Alexo). Module repris tel quel de Renovision (`mesure/`, voir `mesure/README.md`) : aucun cookie, aucun compte tiers, aucun abonnement. Hébergement prévu : **Hostinger**. Tant que le site est sur Netlify (maquette, préversions), rien n'est compté.
 
-Chaque 1er du mois, Sébastien reçoit un e-mail de trois lignes : visites, appels, itinéraires, comparés au mois précédent.
+Chaque 1er du mois, Alexo (`alexo.webdesign@gmail.com`, décision du 24/10/2026) reçoit un e-mail de trois lignes : visites, appels, itinéraires, comparés au mois précédent, à transmettre à Sébastien.
 
 ## Fonctionnement
 
@@ -51,7 +51,7 @@ Domaine provisoire dans les réglages : `carrosserie-labelleetoile.fr` (à confi
    <?php return ['stats_mot_de_passe' => 'une-phrase-longue-choisie-sur-place'];
    ```
    Puis ouvrir `https://<domaine>/stats.php`. Sans `config.php`, la page répond 404.
-7. **Adresses** (facultatif) : par défaut l'e-mail part de `site@carrosserie-labelleetoile.fr` vers `carrosserielabelleetoile@gmail.com`. Pour changer sans rebuild, ajouter `'destinataire' => '…', 'expediteur' => '…'` dans le même `config.php`.
+7. **Adresses** (facultatif) : par défaut l'e-mail part de `site@carrosserie-labelleetoile.fr` vers `alexo.webdesign@gmail.com`. Pour changer sans rebuild, ajouter `'destinataire' => '…', 'expediteur' => '…'` dans le même `config.php`.
 
 Si le premier rapport n'arrive pas : regarder les spams, puis le journal `/home/u12345678/.logs/exim.log`. `mail()` est limité à 10 e-mails par minute et 100 par jour.
 
